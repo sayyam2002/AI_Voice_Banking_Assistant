@@ -1,0 +1,12 @@
+language: en
+pipeline:
+- name: WhitespaceTokenizer
+- name: RegexFeaturizer
+- name: LexicalSyntacticFeaturizer
+- name: CountVectorsFeaturizer
+- name: DIETClassifier
+  epochs: 100
+- name: FallbackClassifier
+  threshold: 0.5
+  ambiguity_threshold: 0.1
+assistant_id: 20251118-103701-late-path

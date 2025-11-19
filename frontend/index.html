@@ -1,0 +1,31 @@
+<head>
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-M">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Financial Assistant</h1>
+        
+        <div id="login-container">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username (user123)" value="user123">
+            <input type="password" id="password" placeholder="Password (password123)" value="password123">
+            <button id="login-button">Login</button>
+            <p id="login-status" class="status-message"></p>
+        </div>
+
+        <div id="assistant-container" style="display: none;">
+            <button id="speak-button">
+                <span>Hold to Speak</span>
+            </button>
+            <div id="conversation-log">
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+version: "3.1"
+intents:
+  - check_balance
+  - get_history
+  - transfer_funds
+  - greet
+  - goodbye
+
+entities:
+  - amount
+  - person

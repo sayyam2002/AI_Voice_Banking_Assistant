@@ -1,0 +1,26 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+- intent: check_balance
+  examples: |
+    - What's my balance?
+    - How much money do I have?
+    - show me my cash
+- intent: get_history
+  examples: |
+    - Show me my transaction history
+    - Recent activity
+- intent: transfer_funds
+  examples: |
+    - Send [50 dollars](amount) to [Jane](person)
+    - I need to send [$100](amount) to [Mom](person)
+    - Transfer [$20](amount) to [Alex](person)
+    - I want to send money
