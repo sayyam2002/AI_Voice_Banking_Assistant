@@ -5,6 +5,7 @@ intents:
   - transfer_funds
   - greet
   - goodbye
+  - ask_loan
 
 entities:
   - amount

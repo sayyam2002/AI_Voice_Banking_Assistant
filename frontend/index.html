@@ -1,31 +1,1233 @@
-<head>
 <!DOCTYPE html>
 <html lang="en">
-    <meta charset="UTF-M">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant</title>
-    <link rel="stylesheet" href="style.css">
+    <title>NeoBank - Advanced Banking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+            display: flex;
+            min-height: 600px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            width: 280px;
+            padding: 30px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: #ffd700;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            color: #1e3c72;
+        }
+
+        /* Account Cards */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .account-type {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .account-balance {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 16px 0;
+        }
+
+        .account-number {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Transaction Table */
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transaction-table th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #e9ecef;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .transaction-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .transaction-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .transaction-icon.credit {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .transaction-icon.debit {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .amount.credit {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .amount.debit {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Voice Authentication */
+        .voice-auth-card {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+        }
+
+        .mic-button.recording {
+            animation: pulse 1.5s infinite;
+            background: #dc3545;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 600px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-header i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .login-header h1 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>AI Financial Assistant</h1>
-        
-        <div id="login-container">
-            <h2>Login</h2>
-            <input type="text" id="username" placeholder="Username (user123)" value="user123">
-            <input type="password" id="password" placeholder="Password (password123)" value="password123">
-            <button id="login-button">Login</button>
-            <p id="login-status" class="status-message"></p>
+    <div class="app-container">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h1>NeoBank</h1>
+                    <p>Secure Voice Banking</p>
+                </div>
+                <div id="login-alert"></div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" value="user123" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" value="password123" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" id="login-btn" style="width: 100%;">
+                    <i class="fa-solid fa-sign-in-alt"></i> Login
+                </button>
+            </div>
         </div>
 
-        <div id="assistant-container" style="display: none;">
-            <button id="speak-button">
-                <span>Hold to Speak</span>
-            </button>
-            <div id="conversation-log">
+        <!-- Main App (Hidden until login) -->
+        <div id="main-app" style="display: none; width: 100%; flex-direction: row;">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="logo">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>NeoBank</span>
+                </div>
+
+                <div class="user-info">
+                    <h3 id="user-name">Alex Johnson</h3>
+                    <p id="user-account">Account: ****5678</p>
+                    <div style="margin-top: 12px;">
+                        <span class="status-badge" id="voice-status">
+                            <i class="fa-solid fa-microphone-slash"></i> Voice Not Enrolled
+                        </span>
+                    </div>
+                </div>
+
+                <nav class="nav-menu">
+                    <div class="nav-item active" data-page="dashboard">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="nav-item" data-page="accounts">
+                        <i class="fa-solid fa-wallet"></i>
+                        <span>Accounts</span>
+                    </div>
+                    <div class="nav-item" data-page="transfer">
+                        <i class="fa-solid fa-exchange-alt"></i>
+                        <span>Transfer Money</span>
+                    </div>
+                    <div class="nav-item" data-page="transactions">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Transactions</span>
+                    </div>
+                    <div class="nav-item" data-page="voice-auth">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>Voice Authentication</span>
+                    </div>
+                </nav>
+
+                <button class="btn btn-secondary" id="logout-btn" style="width: 100%;">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Dashboard Page -->
+                <div class="page active" id="page-dashboard">
+                    <div class="page-header">
+                        <h1>Dashboard</h1>
+                        <p>Welcome back! Here's your financial overview</p>
+                    </div>
+
+                    <div class="accounts-grid">
+                        <div class="account-card">
+                            <div class="account-type">Checking Account</div>
+                            <div class="account-balance" id="dash-balance">$5,230.50</div>
+                            <div class="account-number">•••• •••• •••• 5678</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Recent Transactions</h2>
+                            <a href="#" class="view-all" style="color: #667eea; text-decoration: none;">View All</a>
+                        </div>
+                        <table class="transaction-table" id="recent-transactions">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="transaction-icon debit">
+                                            <i class="fa-solid fa-arrow-up"></i>
+                                        </div>
+                                    </td>
+                                    <td>Starbucks</td>
+                                    <td>2025-11-16</td>
+                                    <td class="amount debit">-$5.75</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Accounts Page -->
+                <div class="page" id="page-accounts">
+                    <div class="page-header">
+                        <h1>My Accounts</h1>
+                        <p>Manage your accounts and view balances</p>
+                    </div>
+
+                    <div class="accounts-grid" id="accounts-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Transfer Page -->
+                <div class="page" id="page-transfer">
+                    <div class="page-header">
+                        <h1>Transfer Money</h1>
+                        <p>Send money securely with voice authentication</p>
+                    </div>
+
+                    <div class="card">
+                        <div id="transfer-alert"></div>
+                        <div class="form-group">
+                            <label>Recipient</label>
+                            <input type="text" id="transfer-recipient" placeholder="Enter recipient name">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="transfer-amount" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select id="transfer-currency">
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="initiate-transfer-btn">
+                            <i class="fa-solid fa-lock"></i> Proceed to Security Verification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transactions Page -->
+                <div class="page" id="page-transactions">
+                    <div class="page-header">
+                        <h1>Transaction History</h1>
+                        <p>View all your past transactions</p>
+                    </div>
+
+                    <div class="card">
+                        <table class="transaction-table" id="all-transactions">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Voice Authentication Page -->
+                <div class="page" id="page-voice-auth">
+                    <div class="page-header">
+                        <h1>Voice Authentication</h1>
+                        <p>Set up biometric voice security</p>
+                    </div>
+
+                    <div class="card voice-auth-card">
+                        <h2 style="margin-bottom: 16px;">Voice ID Setup</h2>
+                        <p style="color: #666; margin-bottom: 24px;">
+                            Record yourself saying: <strong>"My voice is my password"</strong>
+                        </p>
+                        
+                        <div id="enrollment-controls">
+                            <div style="display: flex; gap: 16px; justify-content: center; margin: 24px 0;">
+                                <button class="btn btn-primary" id="record-sample-1">
+                                    <i class="fa-solid fa-microphone"></i> Sample 1
+                                </button>
+                                <button class="btn btn-secondary" id="record-sample-2" disabled>
+                                    <i class="fa-solid fa-microphone"></i> Sample 2
+                                </button>
+                                <button class="btn btn-secondary" id="record-sample-3" disabled>
+                                    <i class="fa-solid fa-microphone"></i> Sample 3
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" id="submit-enrollment" style="display: none;">
+                                <i class="fa-solid fa-check"></i> Complete Enrollment
+                            </button>
+                        </div>
+                        
+                        <div id="enrollment-status" style="margin-top: 24px;"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Security Verification Modal -->
+    <div class="modal" id="security-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" id="close-security-modal">&times;</span>
+                <h2>Security Verification</h2>
+                <p style="color: #666;">Please complete verification to proceed</p>
+            </div>
+            
+            <div id="security-step-pin" class="security-step">
+                <h3 style="margin-bottom: 16px;">Step 1: Enter PIN</h3>
+                <div class="form-group">
+                    <label>4-Digit PIN</label>
+                    <input type="password" id="security-pin" placeholder="••••" maxlength="4">
+                </div>
+                <button class="btn btn-primary" id="verify-pin-btn">
+                    <i class="fa-solid fa-check"></i> Verify PIN
+                </button>
+            </div>
+
+            <div id="security-step-voice" class="security-step" style="display: none;">
+                <h3 style="margin-bottom: 16px;">Step 2: Voice Verification</h3>
+                <p style="color: #666; margin-bottom: 24px;">
+                    Say: <strong>"My voice is my password"</strong>
+                </p>
+                <button class="mic-button" id="verify-voice-btn">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <p style="text-align: center; color: #666;">Click to record</p>
+            </div>
+
+            <div id="security-status" style="margin-top: 24px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'http://127.0.0.1:8000';
+        let userToken = null;
+        let currentUser = null;
+        let audioContext = null;
+        let mediaStreamSource = null;
+        let audioBlobs = [];
+        let pendingTransfer = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            // Setup audio context
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                console.log('✓ Audio initialized');
+            } catch (err) {
+                console.error('Microphone access denied:', err);
+            }
+
+            // Event Listeners
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            document.getElementById('initiate-transfer-btn').addEventListener('click', initiateTransfer);
+            document.getElementById('verify-pin-btn').addEventListener('click', verifyPIN);
+            document.getElementById('verify-voice-btn').addEventListener('click', recordVoiceVerification);
+            document.getElementById('close-security-modal').addEventListener('click', closeSecurityModal);
+            document.getElementById('submit-enrollment').addEventListener('click', submitEnrollment);
+            document.getElementById('record-sample-1').addEventListener('click', () => recordSample(1));
+            document.getElementById('record-sample-2').addEventListener('click', () => recordSample(2));
+            document.getElementById('record-sample-3').addEventListener('click', () => recordSample(3));
+
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => navigateToPage(item.dataset.page));
+            });
+        }
+
+        // Authentication
+        async function handleLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const alertDiv = document.getElementById('login-alert');
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) throw new Error('Invalid credentials');
+
+                const data = await response.json();
+                userToken = data.access_token;
+
+                alertDiv.innerHTML = '<div class="alert alert-success">Login successful! Loading your account...</div>';
+
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'flex';
+                    loadUserData();
+                }, 1000);
+
+            } catch (error) {
+                alertDiv.innerHTML = '<div class="alert alert-danger">Login failed. Please check your credentials.</div>';
+            }
+        }
+
+        function handleLogout() {
+            userToken = null;
+            currentUser = null;
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('login-alert').innerHTML = '';
+        }
+
+        async function loadUserData() {
+            try {
+                // Load balance
+                const balanceRes = await fetch(`${API_URL}/accounts/balance`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const accounts = await balanceRes.json();
+                currentUser = { accounts };
+
+                // Update UI
+                updateDashboard(accounts[0]);
+                updateAccountsList(accounts);
+                loadTransactions();
+
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+            }
+        }
+
+        function updateDashboard(account) {
+            document.getElementById('dash-balance').textContent = `$${account.balance.toFixed(2)}`;
+        }
+
+        function updateAccountsList(accounts) {
+            const container = document.getElementById('accounts-list');
+            container.innerHTML = accounts.map(acc => `
+                <div class="account-card">
+                    <div class="account-type">${acc.account_type.charAt(0).toUpperCase() + acc.account_type.slice(1)} Account</div>
+                    <div class="account-balance">$${acc.balance.toFixed(2)}</div>
+                    <div class="account-number">•••• •••• •••• 5678</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadTransactions() {
+            try {
+                const response = await fetch(`${API_URL}/accounts/history`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const transactions = await response.json();
+
+                const tbody = document.querySelector('#all-transactions tbody');
+                tbody.innerHTML = transactions.map(tx => `
+                    <tr>
+                        <td>
+                            <div class="transaction-icon ${tx.amount < 0 ? 'debit' : 'credit'}">
+                                <i class="fa-solid fa-arrow-${tx.amount < 0 ? 'up' : 'down'}"></i>
+                            </div>
+                        </td>
+                        <td>${tx.description}</td>
+                        <td>${tx.date}</td>
+                        <td class="amount ${tx.amount < 0 ? 'debit' : 'credit'}">
+                            ${tx.amount < 0 ? '-' : '+'}$${Math.abs(tx.amount).toFixed(2)}
+                        </td>
+                        <td><span class="status-badge success">Completed</span></td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Failed to load transactions:', error);
+            }
+        }
+
+        // Navigation
+        function navigateToPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+        }
+
+        // Transfer Flow
+        function initiateTransfer() {
+            const recipient = document.getElementById('transfer-recipient').value;
+            const amount = parseFloat(document.getElementById('transfer-amount').value);
+            const currency = document.getElementById('transfer-currency').value;
+            const alertDiv = document.getElementById('transfer-alert');
+
+            if (!recipient || !amount || amount <= 0) {
+                alertDiv.innerHTML = '<div class="alert alert-danger">Please enter valid recipient and amount</div>';
+                return;
+            }
+
+            if (amount > currentUser.accounts[0].balance) {
+                alertDiv.innerHTML = '<div class="alert alert-danger">Insufficient funds</div>';
+                return;
+            }
+
+            pendingTransfer = { recipient, amount, currency };
+            document.getElementById('security-modal').classList.add('active');
+        }
+
+        async function verifyPIN() {
+            const pin = document.getElementById('security-pin').value;
+            const statusDiv = document.getElementById('security-status');
+
+            if (pin.length !== 4) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">PIN must be 4 digits</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/verify-pin`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pin })
+                });
+
+                if (!response.ok) throw new Error('Invalid PIN');
+
+                statusDiv.innerHTML = '<div class="alert alert-success">PIN verified! Proceed to voice verification.</div>';
+                pendingTransfer.pin = pin;
+
+                setTimeout(() => {
+                    document.getElementById('security-step-pin').style.display = 'none';
+                    document.getElementById('security-step-voice').style.display = 'block';
+                    statusDiv.innerHTML = '';
+                }, 1500);
+
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Invalid PIN. Please try again.</div>';
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://127.0.0.1:8000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem("token", data.access_token);
+                alert("Login successful!");
+                window.location.href = "/dashboard.html";
+            } else {
+                alert("Login failed: " + data.detail);
+            }
+        }
+
+
+        async function recordVoiceVerification() {
+            if (!audioContext || audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
+            const button = document.getElementById('verify-voice-btn');
+            const statusDiv = document.getElementById('security-status');
+
+            button.classList.add('recording');
+            statusDiv.innerHTML = '<div class="alert alert-info">Recording... Speak now!</div>';
+
+            const audioData = [];
+            const bufferSize = 4096;
+            const recorderNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+            recorderNode.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                for (let i = 0; i < inputData.length; i++) {
+                    audioData.push(inputData[i]);
+                }
+            };
+
+            mediaStreamSource.connect(recorderNode);
+            recorderNode.connect(audioContext.destination);
+
+            setTimeout(async () => {
+                mediaStreamSource.disconnect(recorderNode);
+                recorderNode.disconnect(audioContext.destination);
+                button.classList.remove('recording');
+
+                const wavBlob = exportWAV(audioData, audioContext.sampleRate);
+                await verifyVoiceAndTransfer(wavBlob);
+            }, 3000);
+        }
+
+        async function verifyVoiceAndTransfer(voiceBlob) {
+            const statusDiv = document.getElementById('security-status');
+            statusDiv.innerHTML = '<div class="alert alert-info">Verifying your voice...</div>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', voiceBlob, 'verify.wav');
+
+                const response = await fetch(`${API_URL}/auth/verify-voice`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${userToken}` },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Voice verification failed');
+                }
+
+                statusDiv.innerHTML = '<div class="alert alert-success">Voice verified! Processing transfer...</div>';
+
+                // Execute transfer
+                setTimeout(() => executeTransfer(), 1000);
+
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            }
+        }
+
+        async function executeTransfer() {
+            const statusDiv = document.getElementById('security-status');
+
+            try {
+                const response = await fetch(`${API_URL}/transfer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipient: pendingTransfer.recipient,
+                        amount: pendingTransfer.amount,
+                        currency: pendingTransfer.currency,
+                        pin: pendingTransfer.pin
+                    })
+                });
+
+                if (!response.ok) throw new Error('Transfer failed');
+
+                const data = await response.json();
+                statusDiv.innerHTML = `<div class="alert alert-success">Transfer successful! New balance: ${data.new_balance.toFixed(2)}</div>`;
+
+                setTimeout(() => {
+                    closeSecurityModal();
+                    loadUserData();
+                    document.getElementById('transfer-alert').innerHTML = '<div class="alert alert-success">Money transferred successfully!</div>';
+                    document.getElementById('transfer-recipient').value = '';
+                    document.getElementById('transfer-amount').value = '';
+                }, 2000);
+
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Transfer failed. Please try again.</div>';
+            }
+        }
+
+        function closeSecurityModal() {
+            document.getElementById('security-modal').classList.remove('active');
+            document.getElementById('security-step-pin').style.display = 'block';
+            document.getElementById('security-step-voice').style.display = 'none';
+            document.getElementById('security-pin').value = '';
+            document.getElementById('security-status').innerHTML = '';
+            pendingTransfer = null;
+        }
+
+        // Voice Enrollment
+        async function recordSample(sampleNum) {
+            if (!audioContext || audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
+            const button = document.getElementById(`record-sample-${sampleNum}`);
+            const nextButton = document.getElementById(`record-sample-${sampleNum + 1}`);
+            const statusDiv = document.getElementById('enrollment-status');
+
+            button.innerHTML = '<i class="fa-solid fa-circle fa-beat"></i> Recording...';
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="alert alert-info">Recording... Say: "My voice is my password"</div>';
+
+            const audioData = [];
+            const bufferSize = 4096;
+            const recorderNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+            recorderNode.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                for (let i = 0; i < inputData.length; i++) {
+                    audioData.push(inputData[i]);
+                }
+            };
+
+            mediaStreamSource.connect(recorderNode);
+            recorderNode.connect(audioContext.destination);
+
+            setTimeout(() => {
+                mediaStreamSource.disconnect(recorderNode);
+                recorderNode.disconnect(audioContext.destination);
+
+                const wavBlob = exportWAV(audioData, audioContext.sampleRate);
+                audioBlobs.push(wavBlob);
+
+                button.innerHTML = '<i class="fa-solid fa-check"></i> Recorded';
+                button.style.background = '#28a745';
+                button.style.color = 'white';
+                statusDiv.innerHTML = `<div class="alert alert-success">Sample ${sampleNum} recorded successfully</div>`;
+
+                if (nextButton) {
+                    nextButton.disabled = false;
+                    nextButton.classList.remove('btn-secondary');
+                    nextButton.classList.add('btn-primary');
+                } else {
+                    document.getElementById('submit-enrollment').style.display = 'block';
+                }
+            }, 3000);
+        }
+
+        async function submitEnrollment() {
+            const statusDiv = document.getElementById('enrollment-status');
+
+            if (audioBlobs.length !== 3) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please record all 3 samples</div>';
+                return;
+            }
+
+            statusDiv.innerHTML = '<div class="alert alert-info">Uploading voice samples...</div>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file1', audioBlobs[0], 'sample1.wav');
+                formData.append('file2', audioBlobs[1], 'sample2.wav');
+                formData.append('file3', audioBlobs[2], 'sample3.wav');
+
+                const response = await fetch(`${API_URL}/auth/enroll-voice`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${userToken}` },
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('Enrollment failed');
+
+                statusDiv.innerHTML = '<div class="alert alert-success">Voice authentication enabled!</div>';
+                document.getElementById('voice-status').innerHTML = '<i class="fa-solid fa-microphone"></i> Voice Enrolled';
+                document.getElementById('voice-status').classList.remove('warning');
+                document.getElementById('voice-status').classList.add('success');
+
+                // Reset enrollment
+                audioBlobs = [];
+                document.getElementById('enrollment-controls').style.display = 'none';
+
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Enrollment failed. Please try again.</div>';
+            }
+        }
+
+        // Audio Processing
+        function exportWAV(audioData, sampleRate) {
+            const buffer = new ArrayBuffer(44 + audioData.length * 2);
+            const view = new DataView(buffer);
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + audioData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, audioData.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < audioData.length; i++) {
+                let s = Math.max(-1, Math.min(1, audioData[i]));
+                s = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                view.setInt16(offset, s, true);
+                offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+    </script>
 </body>
 </html>

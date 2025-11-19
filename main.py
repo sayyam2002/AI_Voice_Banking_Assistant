@@ -1,38 +1,34 @@
-# main.py
-from fastapi import FastAPI, HTTPException, Depends, Header
-from pydantic import BaseModel      
+from fastapi import FastAPI, HTTPException, Depends, Header, File, UploadFile
+from pydantic import BaseModel
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
-from speechbrain.pretrained import SpeakerRecognition
-from fastapi import File, UploadFile
+from speechbrain.inference.speaker import SpeakerRecognition
 import torchaudio
+import torch
 import os
+import httpx
+from datetime import datetime, timedelta
+import random
 
-# --- Load the Speaker Recognition Model (globally) ---
-# This will download the model the first time it's run
+# --- Load Model ---
 print("Loading speaker verification model...")
 speaker_verification_model = SpeakerRecognition.from_hparams(
     source="speechbrain/spkrec-ecapa-voxceleb", 
     savedir="pretrained_models/spkrec-ecapa-voxceleb"
 )
-print("Speaker model loaded.")
+print("✓ Speaker model loaded successfully")
 
-# --- Create the FastAPI app ---
-app = FastAPI(
-    title="Mock Banking API",
-    description="A secure mock API for the AI Voice Assistant",
-    version="1.0.0"
-)
+app = FastAPI(title="NeoBank Advanced API", version="3.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins (e.g., http://localhost:8001)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (POST, GET, OPTIONS)
-    allow_headers=["*"],  # Allows all headers (Content-Type, Authorization)
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# --- Pydantic Models (Data Validation) ---
+# --- Models ---
 class UserLogin(BaseModel):
     username: str
     password: str
@@ -41,112 +37,433 @@ class TransferBody(BaseModel):
     recipient: str
     amount: float
     currency: str = "USD"
+    pin: str
 
-class Balance(BaseModel):
-    account_type: str
-    balance: float
-    currency: str
+class NluRequest(BaseModel):
+    text: str
 
-class HistoryItem(BaseModel):
-    date: str
-    description: str
+class PinVerification(BaseModel):
+    pin: str
+
+class BillPayment(BaseModel):
+    biller: str
     amount: float
-    
-class LoanInfo(BaseModel):
-    loan_type: str
-    interest_rate: float
+    account_number: str
 
-# --- Mock Database ---
+# --- Enhanced Mock Database ---
 MOCK_DB = {
     "user123": {
         "password": "password123",
         "username": "user123",
         "full_name": "Alex Johnson",
+        "email": "alex.johnson@email.com",
+        "phone": "+1-555-0123",
+        "voice_embedding": None,
+        "pin": "1234",
         "accounts": [
-            {"account_type": "checking", "balance": 5230.50, "currency": "USD"},
-            {"account_type": "savings", "balance": 18400.00, "currency": "USD"}
+            {
+                "account_id": "ACC001",
+                "account_type": "checking",
+                "balance": 5230.50,
+                "currency": "USD",
+                "account_number": "****5678"
+            },
+            {
+                "account_id": "ACC002",
+                "account_type": "savings",
+                "balance": 12450.00,
+                "currency": "USD",
+                "account_number": "****9012"
+            }
         ],
-        "history": [
-            {"date": "2025-11-16", "description": "Starbucks", "amount": -5.75},
-            {"date": "2025-11-15", "description": "Gas Station", "amount": -45.20},
-            {"date": "2025-11-14", "description": "Paycheck Deposit", "amount": 2200.00}
+        "transactions": [
+            {
+                "id": "TXN001",
+                "date": "2025-11-19",
+                "description": "Salary Deposit",
+                "amount": 3500.00,
+                "type": "credit",
+                "category": "Income",
+                "status": "completed"
+            },
+            {
+                "id": "TXN002",
+                "date": "2025-11-18",
+                "description": "Amazon Purchase",
+                "amount": -89.99,
+                "type": "debit",
+                "category": "Shopping",
+                "status": "completed"
+            },
+            {
+                "id": "TXN003",
+                "date": "2025-11-17",
+                "description": "Starbucks",
+                "amount": -5.75,
+                "type": "debit",
+                "category": "Food & Dining",
+                "status": "completed"
+            },
+            {
+                "id": "TXN004",
+                "date": "2025-11-16",
+                "description": "Electric Bill",
+                "amount": -125.00,
+                "type": "debit",
+                "category": "Utilities",
+                "status": "completed"
+            },
+            {
+                "id": "TXN005",
+                "date": "2025-11-15",
+                "description": "Transfer from Savings",
+                "amount": 500.00,
+                "type": "credit",
+                "category": "Transfer",
+                "status": "completed"
+            }
+        ],
+        "beneficiaries": ["John Doe", "Jane Smith", "Mom", "Dad"],
+        "cards": [
+            {
+                "card_number": "****4532",
+                "card_type": "Debit",
+                "expiry": "12/26",
+                "status": "active"
+            }
         ]
     }
 }
 
 MOCK_LOANS = [
-    {"loan_type": "personal", "interest_rate": 5.5},
-    {"loan_type": "home", "interest_rate": 3.8},
-    {"loan_type": "auto", "interest_rate": 4.2}
+    {
+        "loan_type": "personal",
+        "interest_rate": 5.5,
+        "min_amount": 1000,
+        "max_amount": 50000,
+        "tenure": "1-5 years"
+    },
+    {
+        "loan_type": "home",
+        "interest_rate": 3.8,
+        "min_amount": 50000,
+        "max_amount": 500000,
+        "tenure": "5-30 years"
+    },
+    {
+        "loan_type": "auto",
+        "interest_rate": 4.2,
+        "min_amount": 5000,
+        "max_amount": 75000,
+        "tenure": "1-7 years"
+    }
 ]
 
-# --- Mock Security ---
-# This is a simple "dependency" that checks for a valid mock token.
+# --- Security ---
 async def get_current_user(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization scheme")
-    
     token = authorization.split(" ")[1]
-    
-    # In a real app, you'd validate a real JWT. Here, we just check our mock token.
     if token == "MOCK_TOKEN_FOR_USER123":
         return MOCK_DB["user123"]
-    
     raise HTTPException(status_code=401, detail="Invalid token")
 
-# --- API Endpoints ---
+# --- Authentication Endpoints ---
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Mock Banking API"}
-
-@app.post("/auth/login", tags=["Authentication"])
+@app.post("/auth/login")
 def login(user: UserLogin):
-    """
-    Logs in a user and returns a mock JWT token.
-    Use 'user123' and 'password123' to log in.
-    """
+    """User login with username and password"""
     db_user = MOCK_DB.get(user.username)
     if not db_user or db_user["password"] != user.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
-    # In a real app, you would generate a JWT. We'll return a static mock token.
-    return {"access_token": "MOCK_TOKEN_FOR_USER123", "token_type": "bearer"}
-
-@app.get("/accounts/balance", tags=["Accounts"], response_model=List[Balance])
-def get_balance(user_data: dict = Depends(get_current_user)):
-    """
-    Get all account balances for the authenticated user.
-    """
-    return user_data["accounts"]
-
-@app.get("/accounts/history", tags=["Accounts"], response_model=List[HistoryItem])
-def get_history(user_data: dict = Depends(get_current_user)):
-    """
-    Get transaction history for the authenticated user.
-    """
-    return user_data["history"]
-
-@app.post("/transfer", tags=["Transactions"])
-def make_transfer(transfer: TransferBody, user_data: dict = Depends(get_current_user)):
-    """
-    Simulates a fund transfer.
-    """
-    # Find the user's primary account and "deduct" the balance (simulated)
-    primary_account = user_data["accounts"][0]
-    if primary_account["balance"] < transfer.amount:
-        raise HTTPException(status_code=400, detail="Insufficient funds")
-    
-    # In a real app, we'd update the DB. Here, we just return success.
     return {
-        "status": "success",
-        "message": f"Transferred {transfer.amount} {transfer.currency} to {transfer.recipient}",
-        "new_balance": primary_account["balance"] - transfer.amount
+        "access_token": "MOCK_TOKEN_FOR_USER123",
+        "token_type": "bearer",
+        "user": {
+            "username": db_user["username"],
+            "full_name": db_user["full_name"],
+            "email": db_user["email"]
+        }
     }
 
-@app.get("/loans/info", tags=["Public"], response_model=List[LoanInfo])
-def get_loan_info():
-    """
-    Get general information about available loan products. No auth required.
-    """
+@app.post("/auth/enroll-voice")
+async def enroll_voice(
+    file1: UploadFile = File(...), 
+    file2: UploadFile = File(...), 
+    file3: UploadFile = File(...),
+    user_data: dict = Depends(get_current_user)
+):
+    """Enroll user's voice biometric"""
+    try:
+        embeddings = []
+        for i, file in enumerate([file1, file2, file3]):
+            temp_path = f"temp_enroll_{i}.wav"
+            with open(temp_path, "wb") as f:
+                f.write(await file.read())
+            
+            waveform, sample_rate = torchaudio.load(temp_path)
+            if sample_rate != 16000:
+                waveform = torchaudio.functional.resample(waveform, sample_rate, 16000)
+            
+            # Normalize audio
+            waveform = waveform / (torch.max(torch.abs(waveform)) + 1e-8)
+            
+            emb = speaker_verification_model.encode_batch(waveform)
+            embeddings.append(emb)
+            os.remove(temp_path)
+
+        avg_emb = torch.mean(torch.stack(embeddings), dim=0)
+        user_data["voice_embedding"] = avg_emb.squeeze().tolist()
+        
+        print(f"✓ Voice enrolled for user: {user_data['username']}")
+        return {
+            "status": "success",
+            "message": "Voice enrolled successfully",
+            "enrolled_at": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        print(f"✗ Enrollment error: {e}")
+        raise HTTPException(status_code=500, detail=f"Enrollment failed: {str(e)}")
+
+@app.post("/auth/verify-voice")
+async def verify_voice(
+    file: UploadFile = File(...),
+    user_data: dict = Depends(get_current_user)
+):
+    """Verify user's voice against enrolled biometric"""
+    if not user_data["voice_embedding"]:
+        raise HTTPException(
+            status_code=400,
+            detail="No voice ID found. Please enroll first."
+        )
+
+    try:
+        temp_path = "temp_verify.wav"
+        with open(temp_path, "wb") as f:
+            f.write(await file.read())
+
+        waveform, sample_rate = torchaudio.load(temp_path)
+        if sample_rate != 16000:
+            waveform = torchaudio.functional.resample(waveform, sample_rate, 16000)
+        
+        # Normalize audio
+        waveform = waveform / (torch.max(torch.abs(waveform)) + 1e-8)
+        
+        new_emb = speaker_verification_model.encode_batch(waveform)
+        stored_emb = torch.tensor(user_data["voice_embedding"]).unsqueeze(0).unsqueeze(0)
+        
+        score = speaker_verification_model.similarity(new_emb, stored_emb)
+        score_val = score.item()
+        os.remove(temp_path)
+        
+        # Threshold: 0.15 for more permissive verification
+        threshold = 0.15
+        is_match = score_val > threshold
+        
+        print(f"Voice verification | Score: {score_val:.4f} | Threshold: {threshold} | Match: {is_match}")
+
+        if is_match:
+            return {
+                "status": "success",
+                "message": "Voice verified successfully",
+                "score": round(score_val, 4),
+                "confidence": "high" if score_val > 0.3 else "medium"
+            }
+        else:
+            raise HTTPException(
+                status_code=401,
+                detail=f"Voice verification failed. Similarity score: {score_val:.3f}"
+            )
+
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        print(f"✗ Verification error: {e}")
+        raise HTTPException(status_code=500, detail="Verification error occurred")
+
+@app.post("/auth/verify-pin")
+def verify_pin(pin_data: PinVerification, user_data: dict = Depends(get_current_user)):
+    """Verify user's PIN"""
+    if pin_data.pin == user_data["pin"]:
+        return {
+            "status": "success",
+            "message": "PIN verified successfully"
+        }
+    else:
+        raise HTTPException(status_code=401, detail="Incorrect PIN")
+
+# --- Account Management Endpoints ---
+
+@app.get("/accounts/balance")
+def get_balance(user_data: dict = Depends(get_current_user)):
+    """Get all account balances"""
+    return user_data["accounts"]
+
+@app.get("/accounts/{account_id}")
+def get_account_details(account_id: str, user_data: dict = Depends(get_current_user)):
+    """Get specific account details"""
+    account = next((acc for acc in user_data["accounts"] if acc["account_id"] == account_id), None)
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
+
+@app.get("/accounts/history")
+def get_history(user_data: dict = Depends(get_current_user)):
+    """Get transaction history"""
+    return user_data["transactions"]
+
+@app.get("/transactions/{transaction_id}")
+def get_transaction(transaction_id: str, user_data: dict = Depends(get_current_user)):
+    """Get specific transaction details"""
+    txn = next((t for t in user_data["transactions"] if t["id"] == transaction_id), None)
+    if not txn:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    return txn
+
+# --- Transfer & Payment Endpoints ---
+
+@app.post("/transfer")
+def make_transfer(transfer: TransferBody, user_data: dict = Depends(get_current_user)):
+    """Execute money transfer with PIN verification"""
+    # Verify PIN server-side
+    if transfer.pin != user_data["pin"]:
+        raise HTTPException(status_code=401, detail="Invalid PIN for transfer")
+
+    primary = user_data["accounts"][0]
+    
+    if primary["balance"] < transfer.amount:
+        raise HTTPException(status_code=400, detail="Insufficient funds")
+    
+    # Process transfer
+    primary["balance"] -= transfer.amount
+    
+    # Add transaction record
+    new_transaction = {
+        "id": f"TXN{random.randint(100, 999)}",
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "description": f"Transfer to {transfer.recipient}",
+        "amount": -transfer.amount,
+        "type": "debit",
+        "category": "Transfer",
+        "status": "completed"
+    }
+    user_data["transactions"].insert(0, new_transaction)
+    
+    print(f"✓ Transfer completed: ${transfer.amount} to {transfer.recipient}")
+    
+    return {
+        "status": "success",
+        "message": f"Transferred {transfer.currency} {transfer.amount} to {transfer.recipient}",
+        "new_balance": primary["balance"],
+        "transaction_id": new_transaction["id"],
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/beneficiaries")
+def get_beneficiaries(user_data: dict = Depends(get_current_user)):
+    """Get list of saved beneficiaries"""
+    return {"beneficiaries": user_data["beneficiaries"]}
+
+@app.post("/beneficiaries")
+def add_beneficiary(name: str, user_data: dict = Depends(get_current_user)):
+    """Add new beneficiary"""
+    if name not in user_data["beneficiaries"]:
+        user_data["beneficiaries"].append(name)
+    return {"status": "success", "beneficiaries": user_data["beneficiaries"]}
+
+# --- Loan Endpoints ---
+
+@app.get("/loans/info")
+def get_loans():
+    """Get available loan products"""
     return MOCK_LOANS
+
+@app.get("/loans/{loan_type}")
+def get_loan_details(loan_type: str):
+    """Get specific loan product details"""
+    loan = next((l for l in MOCK_LOANS if l["loan_type"] == loan_type), None)
+    if not loan:
+        raise HTTPException(status_code=404, detail="Loan type not found")
+    return loan
+
+# --- NLU Integration ---
+
+@app.post("/detect-intent")
+async def detect_intent(request: NluRequest):
+    """Detect user intent from natural language"""
+    try:
+        # Call Rasa NLU
+        async with httpx.AsyncClient() as client:
+            rasa_response = await client.post(
+                "http://localhost:5005/model/parse",
+                json={"text": request.text}
+            )
+            nlu_data = rasa_response.json()
+
+        intent = nlu_data.get("intent", {}).get("name", "fallback")
+        entities = nlu_data.get("entities", [])
+        confidence = nlu_data.get("intent", {}).get("confidence", 0)
+        
+        # Parse entities
+        params = {}
+        for entity in entities:
+            params[entity["entity"]] = entity["value"]
+
+        # Generate responses
+        responses = {
+            "greet": "Hello! I'm your AI banking assistant. How can I help you today?",
+            "goodbye": "Goodbye! Have a secure day.",
+            "check_balance": "Let me check your balance for you.",
+            "get_history": "Retrieving your recent transactions...",
+            "ask_loan": "I can help you explore our loan options.",
+            "transfer_funds": "I'll help you transfer money securely.",
+            "fallback": "I didn't quite understand that. Could you rephrase?"
+        }
+        
+        response_text = responses.get(intent, "Processing your request...")
+        
+        # Refine transfer response
+        if intent == "transfer_funds":
+            if "amount" not in params or "person" not in params:
+                response_text = "Please specify the recipient and amount for the transfer."
+
+        return {
+            "intent": intent,
+            "parameters": params,
+            "confidence": round(confidence, 3),
+            "response_text": response_text
+            }
+        
+    except Exception as e:
+        print(f"✗ NLU Error: {e}")
+        raise HTTPException(status_code=500, detail=f"NLU service error: {str(e)}")
+
+# --- User Profile ---
+
+@app.get("/profile")
+def get_profile(user_data: dict = Depends(get_current_user)):
+    """Get user profile information"""
+    return {
+        "username": user_data["username"],
+        "full_name": user_data["full_name"],
+        "email": user_data["email"],
+        "phone": user_data["phone"],
+        "voice_enrolled": user_data["voice_embedding"] is not None,
+        "accounts_count": len(user_data["accounts"]),
+        "cards": user_data["cards"]
+    }
+
+# --- Health Check ---
+
+@app.get("/health")
+def health_check():
+    """API health check"""
+    return {
+        "status": "healthy",
+        "service": "NeoBank Advanced API",
+        "version": "3.0.0",
+        "voice_auth": "enabled",
+        "timestamp": datetime.now().isoformat()
+    }

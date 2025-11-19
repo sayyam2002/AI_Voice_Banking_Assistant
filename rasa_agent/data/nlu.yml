@@ -1,26 +1,120 @@
 version: "3.1"
+
 nlu:
 - intent: greet
   examples: |
     - hey
     - hello
     - hi
+    - good morning
+    - good evening
+    - what's up
+    - howdy
+    - hey there
+    - greetings
+    - hi there
+
 - intent: goodbye
   examples: |
     - bye
     - goodbye
+    - see you later
+    - end chat
+    - talk to you later
+    - catch you later
+    - take care
+    - see you
+    - gotta go
+    - bye bye
+
 - intent: check_balance
   examples: |
     - What's my balance?
     - How much money do I have?
     - show me my cash
+    - check my checking account
+    - what is in my wallet
+    - balance inquiry
+    - how much do I have
+    - tell me my balance
+    - account balance please
+    - what's in my account
+    - show balance
+    - check balance
+    - how much money is left
+    - what's my account balance
+    - display my balance
+
 - intent: get_history
   examples: |
     - Show me my transaction history
     - Recent activity
+    - what did I spend lately?
+    - show me my last 5 transactions
+    - transaction history
+    - recent transactions
+    - what have I spent
+    - show my history
+    - last purchases
+    - show recent activity
+    - what are my recent transactions
+    - display transaction history
+    - show me where my money went
+    - spending history
+
+- intent: ask_loan
+  examples: |
+    - can you process my loan request
+    - I need a loan
+    - what are your loan rates?
+    - apply for a personal loan
+    - loan options
+    - tell me about loans
+    - home loan rates
+    - personal loan information
+    - car loan details
+    - what loans do you offer
+    - loan interest rates
+    - I want to apply for a loan
+    - how do I get a loan
+    - loan eligibility
+
 - intent: transfer_funds
   examples: |
     - Send [50 dollars](amount) to [Jane](person)
     - I need to send [$100](amount) to [Mom](person)
     - Transfer [$20](amount) to [Alex](person)
     - I want to send money
+    - send [Sahil](person) [Rs 2000](amount)
+    - transfer [2000 rupees](amount) to [Rahul](person)
+    - pay [Amit](person) [500](amount)
+    - send [10k](amount) to [Priya](person)
+    - send [2000](amount) to [Sahil](person)
+    - transfer [100 dollars](amount) to [John](person)
+    - pay [Sarah](person) [50 bucks](amount)
+    - send [David](person) [1000](amount)
+    - transfer [500 rupees](amount) to [Mike](person)
+    - give [Emma](person) [200](amount)
+    - send money to [Tom](person) [75 dollars](amount)
+    - transfer to [Lisa](person) [3000](amount)
+    - pay [Bob](person) [150](amount)
+    - send [Chris](person) [Rs 5000](amount)
+    - wire [300 dollars](amount) to [Amy](person)
+    - send [Kate](person) [2500](amount)
+    - transfer [1000](amount) to [Mark](person)
+    - pay [Anna](person) [$400](amount)
+    - send [Rick](person) [Rs 1500](amount)
+    - give [Sam](person) [600](amount)
+    - send [$250](amount) to [Nina](person)
+    - transfer [4000 rupees](amount) to [Paul](person)
+    - send [Lucy](person) [Rs 3000](amount)
+    - pay [Jake](person) [800](amount)
+    - wire [1200](amount) to [Mia](person)
+    - I want to transfer [500](amount) to [Peter](person)
+    - can you send [200 dollars](amount) to [Mary](person)
+    - please transfer [1500](amount) to [Jack](person)
+    - send [Jane](person) [100](amount)
+    - transfer [Rahul](person) [Rs 5000](amount)
+    - pay [300](amount) to [Kevin](person)
+    - I need to give [Sam](person) [250 dollars](amount)
+    - wire [2000 rupees](amount) to [Lisa](person)
