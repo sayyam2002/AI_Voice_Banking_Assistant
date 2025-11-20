@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoBank - Advanced Banking</title>
+    <title>NeoBank - AI Voice Banking</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -33,7 +34,6 @@
             min-height: 600px;
         }
 
-        /* Sidebar */
         .sidebar {
             background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
             width: 280px;
@@ -103,7 +103,6 @@
             text-align: center;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 40px;
@@ -139,7 +138,6 @@
             color: #666;
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 16px;
@@ -148,19 +146,6 @@
             margin-bottom: 24px;
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-header h2 {
-            font-size: 20px;
-            color: #1e3c72;
-        }
-
-        /* Account Cards */
         .accounts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -174,16 +159,6 @@
             border-radius: 16px;
             position: relative;
             overflow: hidden;
-        }
-
-        .account-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
 
         .account-type {
@@ -203,7 +178,6 @@
             opacity: 0.8;
         }
 
-        /* Transaction Table */
         .transaction-table {
             width: 100%;
             border-collapse: collapse;
@@ -221,10 +195,6 @@
         .transaction-table td {
             padding: 16px 12px;
             border-bottom: 1px solid #f1f3f5;
-        }
-
-        .transaction-table tr:hover {
-            background: #f8f9fa;
         }
 
         .transaction-icon {
@@ -257,7 +227,6 @@
             font-weight: 600;
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 20px;
         }
@@ -283,7 +252,6 @@
             border-color: #667eea;
         }
 
-        /* Buttons */
         .btn {
             padding: 12px 24px;
             border: none;
@@ -312,50 +280,123 @@
             color: #333;
         }
 
-        .btn-secondary:hover {
-            background: #dee2e6;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        /* Voice Authentication */
-        .voice-auth-card {
+        /* Voice Assistant Specific */
+        .voice-assistant-card {
             text-align: center;
             padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
-        .mic-button {
-            width: 120px;
-            height: 120px;
+        .voice-wave {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .voice-button {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             border: none;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-size: 48px;
+            font-size: 64px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-            margin: 20px auto;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .mic-button:hover {
+        .voice-button:hover {
             transform: scale(1.05);
         }
 
-        .mic-button.recording {
+        .voice-button.listening {
             animation: pulse 1.5s infinite;
             background: #dc3545;
         }
 
+        .voice-button.processing {
+            animation: rotate 2s linear infinite;
+            background: #ffc107;
+        }
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 12px 32px rgba(220, 53, 69, 0.5); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .conversation-display {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 24px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .conversation-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conversation-bubble.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .conversation-bubble.assistant {
+            background: #e9ecef;
+            color: #333;
+            margin-right: auto;
+        }
+
+        .voice-status {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-top: 20px;
+        }
+
+        .voice-commands {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .command-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .command-item strong {
+            color: #667eea;
         }
 
         .status-badge {
@@ -376,12 +417,6 @@
             color: #856404;
         }
 
-        .status-badge.danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -400,37 +435,16 @@
         }
 
         .modal-content {
-            overflow-y: auto;
             background: white;
             border-radius: 16px;
             padding: 32px;
             max-width: 500px;
             width: 90%;
             max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .modal-header {
-            margin-bottom: 24px;
-        }
-
-        .modal-header h2 {
-            color: #1e3c72;
-            margin-bottom: 8px;
-        }
-
-        .close-modal {
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
-        /* Login Screen */
-        #login-screen {
+        .login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -486,7 +500,6 @@
             color: #0c5460;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
@@ -505,12 +518,12 @@
 <body>
     <div class="app-container">
         <!-- Login Screen -->
-        <div id="login-screen">
+        <div id="login-screen" class="login-screen">
             <div class="login-card">
                 <div class="login-header">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <h1>NeoBank</h1>
-                    <p>Secure Voice Banking</p>
+                    <h1>NeoBank AI</h1>
+                    <p>Voice-Powered Banking</p>
                 </div>
                 <div id="login-alert"></div>
                 <div class="form-group">
@@ -527,27 +540,30 @@
             </div>
         </div>
 
-        <!-- Main App (Hidden until login) -->
+        <!-- Main App -->
         <div id="main-app" style="display: none; width: 100%; flex-direction: row;">
-            <!-- Sidebar -->
             <div class="sidebar">
                 <div class="logo">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <span>NeoBank</span>
+                    <i class="fa-solid fa-robot"></i>
+                    <span>NeoBank AI</span>
                 </div>
 
                 <div class="user-info">
                     <h3 id="user-name">Alex Johnson</h3>
                     <p id="user-account">Account: ****5678</p>
                     <div style="margin-top: 12px;">
-                        <span class="status-badge" id="voice-status">
-                            <i class="fa-solid fa-microphone-slash"></i> Voice Not Enrolled
+                        <span class="status-badge warning" id="voice-status">
+                            <i class="fa-solid fa-microphone-slash"></i> Voice Setup Required
                         </span>
                     </div>
                 </div>
 
                 <nav class="nav-menu">
-                    <div class="nav-item active" data-page="dashboard">
+                    <div class="nav-item active" data-page="voice-assistant">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>Voice Assistant</span>
+                    </div>
+                    <div class="nav-item" data-page="dashboard">
                         <i class="fa-solid fa-house"></i>
                         <span>Dashboard</span>
                     </div>
@@ -563,9 +579,9 @@
                         <i class="fa-solid fa-receipt"></i>
                         <span>Transactions</span>
                     </div>
-                    <div class="nav-item" data-page="voice-auth">
-                        <i class="fa-solid fa-microphone"></i>
-                        <span>Voice Authentication</span>
+                    <div class="nav-item" data-page="voice-setup">
+                        <i class="fa-solid fa-fingerprint"></i>
+                        <span>Voice Setup</span>
                     </div>
                 </nav>
 
@@ -574,10 +590,51 @@
                 </button>
             </div>
 
-            <!-- Main Content Area -->
             <div class="main-content">
+                <!-- Voice Assistant Page (NEW) -->
+                <div class="page active" id="page-voice-assistant">
+                    <div class="page-header">
+                        <h1>🎤 AI Voice Assistant</h1>
+                        <p>Speak naturally to perform banking operations</p>
+                    </div>
+
+                    <div class="card voice-assistant-card">
+                        <div class="conversation-display" id="conversation-display">
+                            <div class="conversation-bubble assistant">
+                                👋 Hello! I'm your AI banking assistant. Hold the button and tell me what you'd like to do!
+                            </div>
+                        </div>
+
+                        <div class="voice-wave">
+                            <button class="voice-button" id="voice-assistant-btn">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+
+                        <div class="voice-status" id="voice-assistant-status">
+                            Press and hold to speak
+                        </div>
+
+                        <div class="voice-commands">
+                            <h3 style="margin-bottom: 16px; color: #1e3c72;">Try saying:</h3>
+                            <div class="command-item">
+                                <strong>"Check my balance"</strong> - View account balances
+                            </div>
+                            <div class="command-item">
+                                <strong>"Show transaction history"</strong> - View recent transactions
+                            </div>
+                            <div class="command-item">
+                                <strong>"Send $100 to Jane"</strong> - Initiate money transfer
+                            </div>
+                            <div class="command-item">
+                                <strong>"What are your loan rates?"</strong> - Get loan information
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Dashboard Page -->
-                <div class="page active" id="page-dashboard">
+                <div class="page" id="page-dashboard">
                     <div class="page-header">
                         <h1>Dashboard</h1>
                         <p>Welcome back! Here's your financial overview</p>
@@ -592,11 +649,7 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <h2>Recent Transactions</h2>
-                            <a href="#" class="view-all" style="color: #667eea; text-decoration: none;">View All</a>
-                        </div>
-                        <table class="transaction-table" id="recent-transactions">
+                        <table class="transaction-table">
                             <thead>
                                 <tr>
                                     <th>Type</th>
@@ -605,18 +658,7 @@
                                     <th>Amount</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="transaction-icon debit">
-                                            <i class="fa-solid fa-arrow-up"></i>
-                                        </div>
-                                    </td>
-                                    <td>Starbucks</td>
-                                    <td>2025-11-16</td>
-                                    <td class="amount debit">-$5.75</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="dashboard-transactions"></tbody>
                         </table>
                     </div>
                 </div>
@@ -627,10 +669,7 @@
                         <h1>My Accounts</h1>
                         <p>Manage your accounts and view balances</p>
                     </div>
-
-                    <div class="accounts-grid" id="accounts-list">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="accounts-grid" id="accounts-list"></div>
                 </div>
 
                 <!-- Transfer Page -->
@@ -639,7 +678,6 @@
                         <h1>Transfer Money</h1>
                         <p>Send money securely with voice authentication</p>
                     </div>
-
                     <div class="card">
                         <div id="transfer-alert"></div>
                         <div class="form-group">
@@ -649,14 +687,6 @@
                         <div class="form-group">
                             <label>Amount</label>
                             <input type="number" id="transfer-amount" placeholder="0.00" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Currency</label>
-                            <select id="transfer-currency">
-                                <option value="USD">USD - US Dollar</option>
-                                <option value="EUR">EUR - Euro</option>
-                                <option value="GBP">GBP - British Pound</option>
-                            </select>
                         </div>
                         <button class="btn btn-primary" id="initiate-transfer-btn">
                             <i class="fa-solid fa-lock"></i> Proceed to Security Verification
@@ -670,9 +700,8 @@
                         <h1>Transaction History</h1>
                         <p>View all your past transactions</p>
                     </div>
-
                     <div class="card">
-                        <table class="transaction-table" id="all-transactions">
+                        <table class="transaction-table">
                             <thead>
                                 <tr>
                                     <th>Type</th>
@@ -682,87 +711,87 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Populated by JS -->
-                            </tbody>
+                            <tbody id="all-transactions"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Voice Authentication Page -->
-                <div class="page" id="page-voice-auth">
+                <!-- Voice Setup Page -->
+                <div class="page" id="page-voice-setup">
                     <div class="page-header">
-                        <h1>Voice Authentication</h1>
+                        <h1>Voice Authentication Setup</h1>
                         <p>Set up biometric voice security</p>
                     </div>
-
-                    <div class="card voice-auth-card">
-                        <h2 style="margin-bottom: 16px;">Voice ID Setup</h2>
-                        <p style="color: #666; margin-bottom: 24px;">
-                            Record yourself saying: <strong>"My voice is my password"</strong>
-                        </p>
-                        
-                        <div id="enrollment-controls">
-                            <div style="display: flex; gap: 16px; justify-content: center; margin: 24px 0;">
-                                <button class="btn btn-primary" id="record-sample-1">
-                                    <i class="fa-solid fa-microphone"></i> Sample 1
-                                </button>
-                                <button class="btn btn-secondary" id="record-sample-2" disabled>
-                                    <i class="fa-solid fa-microphone"></i> Sample 2
-                                </button>
-                                <button class="btn btn-secondary" id="record-sample-3" disabled>
-                                    <i class="fa-solid fa-microphone"></i> Sample 3
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div id="enrollment-message">
+                            <h2 style="margin-bottom: 16px;">Voice ID Setup</h2>
+                            <p style="color: #666; margin-bottom: 24px;">
+                                Record yourself saying: <strong>"My voice is my password"</strong>
+                            </p>
+                            
+                            <div id="enrollment-controls">
+                                <div style="display: flex; gap: 16px; justify-content: center; margin: 24px 0;">
+                                    <button class="btn btn-primary" id="record-sample-1">
+                                        <i class="fa-solid fa-microphone"></i> Sample 1
+                                    </button>
+                                    <button class="btn btn-secondary" id="record-sample-2" disabled>
+                                        <i class="fa-solid fa-microphone"></i> Sample 2
+                                    </button>
+                                    <button class="btn btn-secondary" id="record-sample-3" disabled>
+                                        <i class="fa-solid fa-microphone"></i> Sample 3
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary" id="submit-enrollment" style="display: none;">
+                                    <i class="fa-solid fa-check"></i> Complete Enrollment
                                 </button>
                             </div>
-                            <button class="btn btn-primary" id="submit-enrollment" style="display: none;">
-                                <i class="fa-solid fa-check"></i> Complete Enrollment
+                            
+                            <div id="enrollment-status" style="margin-top: 24px;"></div>
+                        </div>
+
+                        <div id="enrollment-success" style="display: none;">
+                            <i class="fa-solid fa-check-circle" style="font-size: 64px; color: #28a745; margin-bottom: 24px;"></i>
+                            <h2 style="color: #28a745; margin-bottom: 16px;">Voice Authentication Enabled!</h2>
+                            <p style="color: #666; margin-bottom: 24px;">
+                                Your voice biometrics have been successfully enrolled. You can now use voice commands to perform secure transactions.
+                            </p>
+                            <button class="btn btn-primary" onclick="navigateToPage('voice-assistant')">
+                                <i class="fa-solid fa-microphone"></i> Try Voice Assistant
                             </button>
                         </div>
-                        
-                        <div id="enrollment-status" style="margin-top: 24px;"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Security Verification Modal -->
+    <!-- Security Modal -->
     <div class="modal" id="security-modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <span class="close-modal" id="close-security-modal">&times;</span>
-                <h2>Security Verification</h2>
-                <p style="color: #666;">Please complete verification to proceed</p>
-            </div>
+            <h2 style="margin-bottom: 24px;">Security Verification</h2>
             
-            <div id="security-step-pin" class="security-step">
+            <div id="security-step-pin">
                 <h3 style="margin-bottom: 16px;">Step 1: Enter PIN</h3>
                 <div class="form-group">
-                    <label>4-Digit PIN</label>
                     <input type="password" id="security-pin" placeholder="••••" maxlength="4">
                 </div>
-                <button class="btn btn-primary" id="verify-pin-btn">
-                    <i class="fa-solid fa-check"></i> Verify PIN
-                </button>
+                <button class="btn btn-primary" id="verify-pin-btn">Verify PIN</button>
             </div>
 
-            <div id="security-step-voice" class="security-step" style="display: none;">
+            <div id="security-step-voice" style="display: none; text-align: center;">
                 <h3 style="margin-bottom: 16px;">Step 2: Voice Verification</h3>
-                <p style="color: #666; margin-bottom: 24px;">
-                    Say: <strong>"My voice is my password"</strong>
-                </p>
-                <button class="mic-button" id="verify-voice-btn">
+                <p style="margin-bottom: 24px;">Say: <strong>"My voice is my password"</strong></p>
+                <button class="voice-button" id="verify-voice-btn" style="width: 120px; height: 120px; font-size: 48px; margin: 0 auto;">
                     <i class="fa-solid fa-microphone"></i>
                 </button>
-                <p style="text-align: center; color: #666;">Click to record</p>
             </div>
 
             <div id="security-status" style="margin-top: 24px;"></div>
+            <button class="btn btn-secondary" id="close-security-modal" style="margin-top: 16px;">Cancel</button>
         </div>
     </div>
 
     <script>
-        // Configuration
         const API_URL = 'http://127.0.0.1:8000';
         let userToken = null;
         let currentUser = null;
@@ -770,6 +799,18 @@
         let mediaStreamSource = null;
         let audioBlobs = [];
         let pendingTransfer = null;
+        let isVoiceEnrolled = false;
+
+        // Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -777,17 +818,9 @@
         });
 
         async function initializeApp() {
-            // Setup audio context
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                mediaStreamSource = audioContext.createMediaStreamSource(stream);
-                console.log('✓ Audio initialized');
-            } catch (err) {
-                console.error('Microphone access denied:', err);
-            }
-
-            // Event Listeners
+            console.log('🚀 Initializing app...');
+            
+            // Attach event listeners FIRST
             document.getElementById('login-btn').addEventListener('click', handleLogin);
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('initiate-transfer-btn').addEventListener('click', initiateTransfer);
@@ -799,10 +832,30 @@
             document.getElementById('record-sample-2').addEventListener('click', () => recordSample(2));
             document.getElementById('record-sample-3').addEventListener('click', () => recordSample(3));
 
+            // Voice Assistant Button
+            const voiceBtn = document.getElementById('voice-assistant-btn');
+            voiceBtn.addEventListener('mousedown', startVoiceListening);
+            voiceBtn.addEventListener('mouseup', stopVoiceListening);
+            voiceBtn.addEventListener('touchstart', startVoiceListening);
+            voiceBtn.addEventListener('touchend', stopVoiceListening);
+
             // Navigation
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => navigateToPage(item.dataset.page));
             });
+
+            console.log('✓ Event listeners attached');
+
+            // Initialize audio (non-blocking)
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                console.log('✓ Audio initialized');
+            } catch (err) {
+                console.warn('⚠️ Microphone access denied:', err);
+                addToConversation('assistant', '⚠️ Please grant microphone access to use voice features.');
+            }
         }
 
         // Authentication
@@ -823,7 +876,7 @@
                 const data = await response.json();
                 userToken = data.access_token;
 
-                alertDiv.innerHTML = '<div class="alert alert-success">Login successful! Loading your account...</div>';
+                alertDiv.innerHTML = '<div class="alert alert-success">Login successful!</div>';
 
                 setTimeout(() => {
                     document.getElementById('login-screen').style.display = 'none';
@@ -846,14 +899,12 @@
 
         async function loadUserData() {
             try {
-                // Load balance
                 const balanceRes = await fetch(`${API_URL}/accounts/balance`, {
                     headers: { 'Authorization': `Bearer ${userToken}` }
                 });
                 const accounts = await balanceRes.json();
                 currentUser = { accounts };
 
-                // Update UI
                 updateDashboard(accounts[0]);
                 updateAccountsList(accounts);
                 loadTransactions();
@@ -864,7 +915,7 @@
         }
 
         function updateDashboard(account) {
-            document.getElementById('dash-balance').textContent = `$${account.balance.toFixed(2)}`;
+            document.getElementById('dash-balance').textContent = `${account.balance.toFixed(2)}`;
         }
 
         function updateAccountsList(accounts) {
@@ -872,7 +923,7 @@
             container.innerHTML = accounts.map(acc => `
                 <div class="account-card">
                     <div class="account-type">${acc.account_type.charAt(0).toUpperCase() + acc.account_type.slice(1)} Account</div>
-                    <div class="account-balance">$${acc.balance.toFixed(2)}</div>
+                    <div class="account-balance">${acc.balance.toFixed(2)}</div>
                     <div class="account-number">•••• •••• •••• 5678</div>
                 </div>
             `).join('');
@@ -885,7 +936,7 @@
                 });
                 const transactions = await response.json();
 
-                const tbody = document.querySelector('#all-transactions tbody');
+                const tbody = document.querySelector('#all-transactions');
                 tbody.innerHTML = transactions.map(tx => `
                     <tr>
                         <td>
@@ -896,9 +947,26 @@
                         <td>${tx.description}</td>
                         <td>${tx.date}</td>
                         <td class="amount ${tx.amount < 0 ? 'debit' : 'credit'}">
-                            ${tx.amount < 0 ? '-' : '+'}$${Math.abs(tx.amount).toFixed(2)}
+                            ${tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
                         </td>
                         <td><span class="status-badge success">Completed</span></td>
+                    </tr>
+                `).join('');
+
+                // Also update dashboard transactions (first 3)
+                const dashTbody = document.querySelector('#dashboard-transactions');
+                dashTbody.innerHTML = transactions.slice(0, 3).map(tx => `
+                    <tr>
+                        <td>
+                            <div class="transaction-icon ${tx.amount < 0 ? 'debit' : 'credit'}">
+                                <i class="fa-solid fa-arrow-${tx.amount < 0 ? 'up' : 'down'}"></i>
+                            </div>
+                        </td>
+                        <td>${tx.description}</td>
+                        <td>${tx.date}</td>
+                        <td class="amount ${tx.amount < 0 ? 'debit' : 'credit'}">
+                            ${tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
+                        </td>
                     </tr>
                 `).join('');
 
@@ -916,11 +984,177 @@
             document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
         }
 
+        // Voice Assistant Functions
+        function addToConversation(sender, text) {
+            const container = document.getElementById('conversation-display');
+            const bubble = document.createElement('div');
+            bubble.className = `conversation-bubble ${sender}`;
+            bubble.textContent = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function startVoiceListening() {
+            if (!recognition) {
+                addToConversation('assistant', '❌ Speech recognition not supported in this browser.');
+                return;
+            }
+
+            const button = document.getElementById('voice-assistant-btn');
+            const status = document.getElementById('voice-assistant-status');
+            
+            button.classList.add('listening');
+            status.textContent = '🎤 Listening...';
+            
+            recognition.start();
+
+            recognition.onresult = async (event) => {
+                const transcript = event.results[0][0].transcript;
+                addToConversation('user', transcript);
+                
+                button.classList.remove('listening');
+                button.classList.add('processing');
+                status.textContent = '🤔 Processing...';
+
+                await processVoiceCommand(transcript);
+
+                button.classList.remove('processing');
+                status.textContent = 'Press and hold to speak';
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                const button = document.getElementById('voice-assistant-btn');
+                button.classList.remove('listening', 'processing');
+                document.getElementById('voice-assistant-status').textContent = 'Press and hold to speak';
+            };
+        }
+
+        function stopVoiceListening() {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+
+        async function processVoiceCommand(text) {
+            try {
+                const response = await fetch(`${API_URL}/detect-intent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                if (!response.ok) throw new Error('NLU service error');
+                
+                const nluData = await response.json();
+                const intent = nluData.intent;
+                const params = nluData.parameters;
+                
+                console.log('Intent:', intent, 'Params:', params);
+
+                switch (intent) {
+                    case 'check_balance':
+                        await handleVoiceBalance();
+                        break;
+                    case 'get_history':
+                        await handleVoiceHistory();
+                        break;
+                    case 'transfer_funds':
+                        if (params.amount && params.person) {
+                            await handleVoiceTransfer(params.person, params.amount);
+                        } else {
+                            addToConversation('assistant', 'Please specify both recipient and amount. For example: "Send $100 to Jane"');
+                        }
+                        break;
+                    case 'ask_loan':
+                        await handleVoiceLoan();
+                        break;
+                    case 'greet':
+                        addToConversation('assistant', '👋 Hello! I can help you check balances, make transfers, view transactions, or inquire about loans. What would you like to do?');
+                        break;
+                    case 'goodbye':
+                        addToConversation('assistant', '👋 Goodbye! Have a secure day!');
+                        break;
+                    default:
+                        addToConversation('assistant', "I didn't quite understand that. Try saying things like 'check my balance' or 'send $50 to John'");
+                }
+
+            } catch (error) {
+                console.error('Error processing command:', error);
+                addToConversation('assistant', '❌ Sorry, I had trouble processing that. Please try again.');
+            }
+        }
+
+        async function handleVoiceBalance() {
+            try {
+                const response = await fetch(`${API_URL}/accounts/balance`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const accounts = await response.json();
+                const checking = accounts[0];
+                addToConversation('assistant', `💰 Your checking account balance is ${checking.balance.toFixed(2)}`);
+            } catch (error) {
+                addToConversation('assistant', '❌ Sorry, I couldn\'t retrieve your balance.');
+            }
+        }
+
+        async function handleVoiceHistory() {
+            try {
+                const response = await fetch(`${API_URL}/accounts/history`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const transactions = await response.json();
+                const recent = transactions.slice(0, 3);
+                
+                let message = '📊 Recent transactions:\n\n';
+                recent.forEach(tx => {
+                    message += `• ${tx.description}: ${tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)} on ${tx.date}\n`;
+                });
+                
+                addToConversation('assistant', message);
+            } catch (error) {
+                addToConversation('assistant', '❌ Sorry, I couldn\'t retrieve your transaction history.');
+            }
+        }
+
+        async function handleVoiceTransfer(recipient, amount) {
+            // Parse amount (remove currency symbols)
+            const numAmount = parseFloat(amount.replace(/[^0-9.]/g, ''));
+            
+            if (isNaN(numAmount) || numAmount <= 0) {
+                addToConversation('assistant', '❌ Invalid amount specified.');
+                return;
+            }
+
+            addToConversation('assistant', `🔒 To send ${numAmount} to ${recipient}, I need to verify your identity. Please enter your PIN and provide voice verification.`);
+            
+            // Set up pending transfer
+            pendingTransfer = { recipient, amount: numAmount, currency: 'USD' };
+            
+            // Open security modal
+            document.getElementById('security-modal').classList.add('active');
+        }
+
+        async function handleVoiceLoan() {
+            try {
+                const response = await fetch(`${API_URL}/loans/info`);
+                const loans = await response.json();
+                
+                let message = '🏦 Available loan products:\n\n';
+                loans.forEach(loan => {
+                    message += `• ${loan.loan_type.charAt(0).toUpperCase() + loan.loan_type.slice(1)} Loan: ${loan.interest_rate}% interest rate\n`;
+                });
+                
+                addToConversation('assistant', message);
+            } catch (error) {
+                addToConversation('assistant', '❌ Sorry, I couldn\'t retrieve loan information.');
+            }
+        }
+
         // Transfer Flow
         function initiateTransfer() {
             const recipient = document.getElementById('transfer-recipient').value;
             const amount = parseFloat(document.getElementById('transfer-amount').value);
-            const currency = document.getElementById('transfer-currency').value;
             const alertDiv = document.getElementById('transfer-alert');
 
             if (!recipient || !amount || amount <= 0) {
@@ -928,12 +1162,12 @@
                 return;
             }
 
-            if (amount > currentUser.accounts[0].balance) {
+            if (currentUser && amount > currentUser.accounts[0].balance) {
                 alertDiv.innerHTML = '<div class="alert alert-danger">Insufficient funds</div>';
                 return;
             }
 
-            pendingTransfer = { recipient, amount, currency };
+            pendingTransfer = { recipient, amount, currency: 'USD' };
             document.getElementById('security-modal').classList.add('active');
         }
 
@@ -958,7 +1192,7 @@
 
                 if (!response.ok) throw new Error('Invalid PIN');
 
-                statusDiv.innerHTML = '<div class="alert alert-success">PIN verified! Proceed to voice verification.</div>';
+                statusDiv.innerHTML = '<div class="alert alert-success">✓ PIN verified!</div>';
                 pendingTransfer.pin = pin;
 
                 setTimeout(() => {
@@ -968,33 +1202,9 @@
                 }, 1500);
 
             } catch (error) {
-                statusDiv.innerHTML = '<div class="alert alert-danger">Invalid PIN. Please try again.</div>';
+                statusDiv.innerHTML = '<div class="alert alert-danger">❌ Invalid PIN</div>';
             }
         }
-
-        async function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            const response = await fetch("http://127.0.0.1:8000/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem("token", data.access_token);
-                alert("Login successful!");
-                window.location.href = "/dashboard.html";
-            } else {
-                alert("Login failed: " + data.detail);
-            }
-        }
-
 
         async function recordVoiceVerification() {
             if (!audioContext || audioContext.state === 'suspended') {
@@ -1005,7 +1215,7 @@
             const statusDiv = document.getElementById('security-status');
 
             button.classList.add('recording');
-            statusDiv.innerHTML = '<div class="alert alert-info">Recording... Speak now!</div>';
+            statusDiv.innerHTML = '<div class="alert alert-info">🎤 Recording...</div>';
 
             const audioData = [];
             const bufferSize = 4096;
@@ -1033,7 +1243,7 @@
 
         async function verifyVoiceAndTransfer(voiceBlob) {
             const statusDiv = document.getElementById('security-status');
-            statusDiv.innerHTML = '<div class="alert alert-info">Verifying your voice...</div>';
+            statusDiv.innerHTML = '<div class="alert alert-info">🔍 Verifying voice...</div>';
 
             try {
                 const formData = new FormData();
@@ -1050,13 +1260,11 @@
                     throw new Error(error.detail || 'Voice verification failed');
                 }
 
-                statusDiv.innerHTML = '<div class="alert alert-success">Voice verified! Processing transfer...</div>';
-
-                // Execute transfer
+                statusDiv.innerHTML = '<div class="alert alert-success">✓ Voice verified!</div>';
                 setTimeout(() => executeTransfer(), 1000);
 
             } catch (error) {
-                statusDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ ${error.message}</div>`;
             }
         }
 
@@ -1081,18 +1289,21 @@
                 if (!response.ok) throw new Error('Transfer failed');
 
                 const data = await response.json();
-                statusDiv.innerHTML = `<div class="alert alert-success">Transfer successful! New balance: ${data.new_balance.toFixed(2)}</div>`;
+                statusDiv.innerHTML = `<div class="alert alert-success">✅ Transfer successful! New balance: ${data.new_balance.toFixed(2)}</div>`;
+
+                // Add to conversation if initiated via voice
+                addToConversation('assistant', `✅ Successfully transferred ${pendingTransfer.amount} to ${pendingTransfer.recipient}. Your new balance is ${data.new_balance.toFixed(2)}`);
 
                 setTimeout(() => {
                     closeSecurityModal();
                     loadUserData();
-                    document.getElementById('transfer-alert').innerHTML = '<div class="alert alert-success">Money transferred successfully!</div>';
+                    document.getElementById('transfer-alert').innerHTML = '<div class="alert alert-success">✅ Money transferred successfully!</div>';
                     document.getElementById('transfer-recipient').value = '';
                     document.getElementById('transfer-amount').value = '';
                 }, 2000);
 
             } catch (error) {
-                statusDiv.innerHTML = '<div class="alert alert-danger">Transfer failed. Please try again.</div>';
+                statusDiv.innerHTML = '<div class="alert alert-danger">❌ Transfer failed</div>';
             }
         }
 
@@ -1117,7 +1328,7 @@
 
             button.innerHTML = '<i class="fa-solid fa-circle fa-beat"></i> Recording...';
             button.disabled = true;
-            statusDiv.innerHTML = '<div class="alert alert-info">Recording... Say: "My voice is my password"</div>';
+            statusDiv.innerHTML = '<div class="alert alert-info">🎤 Recording... Say: "My voice is my password"</div>';
 
             const audioData = [];
             const bufferSize = 4096;
@@ -1143,7 +1354,7 @@
                 button.innerHTML = '<i class="fa-solid fa-check"></i> Recorded';
                 button.style.background = '#28a745';
                 button.style.color = 'white';
-                statusDiv.innerHTML = `<div class="alert alert-success">Sample ${sampleNum} recorded successfully</div>`;
+                statusDiv.innerHTML = `<div class="alert alert-success">✓ Sample ${sampleNum} recorded</div>`;
 
                 if (nextButton) {
                     nextButton.disabled = false;
@@ -1163,7 +1374,7 @@
                 return;
             }
 
-            statusDiv.innerHTML = '<div class="alert alert-info">Uploading voice samples...</div>';
+            statusDiv.innerHTML = '<div class="alert alert-info">Uploading...</div>';
 
             try {
                 const formData = new FormData();
@@ -1179,17 +1390,23 @@
 
                 if (!response.ok) throw new Error('Enrollment failed');
 
-                statusDiv.innerHTML = '<div class="alert alert-success">Voice authentication enabled!</div>';
-                document.getElementById('voice-status').innerHTML = '<i class="fa-solid fa-microphone"></i> Voice Enrolled';
+                // Hide enrollment form, show success message
+                document.getElementById('enrollment-message').style.display = 'none';
+                document.getElementById('enrollment-success').style.display = 'block';
+
+                // Update sidebar status
+                document.getElementById('voice-status').innerHTML = '<i class="fa-solid fa-microphone"></i> Voice Enabled';
                 document.getElementById('voice-status').classList.remove('warning');
                 document.getElementById('voice-status').classList.add('success');
-
-                // Reset enrollment
+                
+                isVoiceEnrolled = true;
                 audioBlobs = [];
-                document.getElementById('enrollment-controls').style.display = 'none';
+
+                // Add to conversation
+                addToConversation('assistant', '✅ Voice authentication enabled! You can now use voice commands for secure transactions.');
 
             } catch (error) {
-                statusDiv.innerHTML = '<div class="alert alert-danger">Enrollment failed. Please try again.</div>';
+                statusDiv.innerHTML = '<div class="alert alert-danger">❌ Enrollment failed. Please try again.</div>';
             }
         }
 
