@@ -3,7 +3,9 @@ venv-rasa/
 __pycache__/
 *.pyc
 
+.env
+
 # Rasa
-models/
-.rasa/
+rasa_agent/models/
+rasa_agent/.rasa/
 results/
