@@ -191,19 +191,190 @@ async function sendAudioToBackend(wavBlob) {
     console.log("NLU:", nluData);
 
     if (nluData.intent === "check_balance") {
-      // Now call your balance API
       const token = localStorage.getItem("token");
       const balRes = await fetch("http://127.0.0.1:8000/accounts/balance", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const balData = await balRes.json();
-      document.getElementById(
-        "voice-result"
-      ).innerHTML = `💰 Your balance is ₹${balData.balance}`;
+
+      console.log("BALANCE RESPONSE:", balData);
+
+      if (!Array.isArray(balData) || balData.length === 0) {
+        voiceResultDiv.innerHTML = "💰 You have no accounts.";
+        return;
+      }
+
+      let html = `
+    <div style="
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    ">
+      💰 Your Accounts
+    </div>
+
+    <div style="
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 25px !important;
+      overflow-x: auto !important;
+      padding-bottom: 10px;
+      width: 100%;
+      scrollbar-width: thin;
+    ">
+  `;
+
+      for (const acc of balData) {
+        html += `
+      <div style="
+        min-width: 220px;
+        background: white;
+        border-radius: 12px;
+        padding: 18px;
+        text-align: left;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+        flex-shrink: 0;
+      ">
+        <div style="font-weight: 700; font-size: 18px; margin-bottom: 10px;">
+          ${acc.account_type}
+        </div>
+
+        <div style="line-height: 1.7; font-size: 15px;">
+          <strong>Balance:</strong> ₹${acc.balance}<br>
+          <strong>Account ID:</strong> ${acc.id}
+        </div>
+      </div>
+    `;
+      }
+
+      html += `</div>`;
+
+      voiceResultDiv.innerHTML = html;
+    } else if (nluData.intent === "get_history") {
+      const token = localStorage.getItem("token");
+      const trRes = await fetch("http://127.0.0.1:8000/transactions/", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const transactions = await trRes.json();
+
+      console.log("TRANSACTIONS:", transactions);
+
+      if (!Array.isArray(transactions) || transactions.length === 0) {
+        voiceResultDiv.innerHTML = "📄 No recent transactions found.";
+        return;
+      }
+
+      let html = `
+    <div style="
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    ">
+      📄 Recent Transactions
+    </div>
+
+    <ul style="
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    ">
+  `;
+
+      for (const t of transactions.slice(0, 6)) {
+        html += `
+      <li style="
+        background: white;
+        padding: 14px 18px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        border: 1px solid #eee;
+        font-size: 15px;
+        line-height: 1.6;
+      ">
+        <strong>${t.type.toUpperCase()}</strong> — ₹${t.amount}<br>
+        ${t.description}<br>
+        <span style="font-size: 13px; color: #666;">${t.date}</span>
+      </li>
+    `;
+      }
+
+      html += `</ul>`;
+
+      voiceResultDiv.innerHTML = html;
+    } else if (nluData.intent === "ask_loan") {
+      const loanRes = await fetch("http://127.0.0.1:8000/loans/info");
+      const loans = await loanRes.json();
+
+      console.log("LOANS:", loans);
+
+      if (!Array.isArray(loans) || loans.length === 0) {
+        voiceResultDiv.innerHTML = "💸 No loan products found.";
+        return;
+      }
+
+      let html = `
+    <div style="
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    ">
+      💸 Available Loan Options
+    </div>
+
+    <!-- HARD-LOCKED HORIZONTAL CONTAINER -->
+    <div style="
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 25px !important;
+      overflow-x: auto !important;
+      padding: 10px;
+      scrollbar-width: thin;
+      width: 100%;
+    ">
+  `;
+
+      for (const loan of loans) {
+        html += `
+      <div style="
+        min-width: 240px;
+        background: white;
+        border-radius: 14px;
+        padding: 18px;
+        text-align: left;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+        flex-shrink: 0;
+      ">
+        <div style="font-weight: 700; font-size: 18px; text-transform: capitalize; margin-bottom: 10px;">
+          ${loan.loan_type}
+        </div>
+
+        <div style="line-height: 1.7; font-size: 15px;">
+          <strong>Interest:</strong> ${loan.interest_rate}%<br>
+          <strong>Amount:</strong> ₹${loan.min_amount} - ₹${loan.max_amount}<br>
+          <strong>Tenure:</strong> ${loan.tenure} months
+        </div>
+      </div>
+    `;
+      }
+
+      html += `</div>`;
+
+      voiceResultDiv.innerHTML = html;
     } else {
-      document.getElementById(
-        "voice-result"
-      ).innerHTML = `🗣 ${data.text}<br>Intent: ${nluData.intent}`;
+      voiceResultDiv.innerHTML = `🗣 ${data.text}<br> Sorry, I cannot understand your voice`;   //Intent: ${nluData.intent}
     }
   } catch (err) {
     console.error("sendAudioToBackend failed:", err);
