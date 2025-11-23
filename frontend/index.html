@@ -1,4 +1,28 @@
 <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>NeoBank</title>
+    <script>
+        // simple check
+        const token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "./pages/dashboard.html";
+        } else {
+            window.location.href = "./pages/login.html";
+        }
+    </script>
+</head>
+<body></body>
+</html>
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -517,7 +541,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Login Screen -->
         <div id="login-screen" class="login-screen">
             <div class="login-card">
                 <div class="login-header">
@@ -540,7 +563,6 @@
             </div>
         </div>
 
-        <!-- Main App -->
         <div id="main-app" style="display: none; width: 100%; flex-direction: row;">
             <div class="sidebar">
                 <div class="logo">
@@ -591,7 +613,6 @@
             </div>
 
             <div class="main-content">
-                <!-- Voice Assistant Page (NEW) -->
                 <div class="page active" id="page-voice-assistant">
                     <div class="page-header">
                         <h1>🎤 AI Voice Assistant</h1>
@@ -633,7 +654,6 @@
                     </div>
                 </div>
 
-                <!-- Dashboard Page -->
                 <div class="page" id="page-dashboard">
                     <div class="page-header">
                         <h1>Dashboard</h1>
@@ -663,7 +683,6 @@
                     </div>
                 </div>
 
-                <!-- Accounts Page -->
                 <div class="page" id="page-accounts">
                     <div class="page-header">
                         <h1>My Accounts</h1>
@@ -672,7 +691,6 @@
                     <div class="accounts-grid" id="accounts-list"></div>
                 </div>
 
-                <!-- Transfer Page -->
                 <div class="page" id="page-transfer">
                     <div class="page-header">
                         <h1>Transfer Money</h1>
@@ -694,7 +712,6 @@
                     </div>
                 </div>
 
-                <!-- Transactions Page -->
                 <div class="page" id="page-transactions">
                     <div class="page-header">
                         <h1>Transaction History</h1>
@@ -716,7 +733,6 @@
                     </div>
                 </div>
 
-                <!-- Voice Setup Page -->
                 <div class="page" id="page-voice-setup">
                     <div class="page-header">
                         <h1>Voice Authentication Setup</h1>
@@ -765,7 +781,6 @@
         </div>
     </div>
 
-    <!-- Security Modal -->
     <div class="modal" id="security-modal">
         <div class="modal-content">
             <h2 style="margin-bottom: 24px;">Security Verification</h2>
@@ -1447,4 +1462,4 @@
         }
     </script>
 </body>
-</html>
+</html> -->

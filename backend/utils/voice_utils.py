@@ -49,38 +49,43 @@ def _compute_embedding_sync(wav_path: str):
     Blocking function that loads wav at wav_path, resamples, normalizes and returns a 1D list embedding.
     Designed to be called in a threadpool (run_in_executor).
     """
-    try:
-        import torch
-        import torchaudio
-    except Exception as e:
-        raise RuntimeError("Missing torch/torchaudio: " + str(e))
 
-    model = _get_model()  # may raise
+    # ---- Use soundfile + librosa instead of torchaudio ----
+    import torch
+    import soundfile as sf
+    import librosa
+    import numpy as np
 
-    # Load audio
-    waveform, sr = torchaudio.load(wav_path)  # waveform: Tensor [channels, time]
+    model = _get_model()  # Load SpeechBrain ECAPA
+
+    # Load audio safely on Windows
+    wav, sr = sf.read(wav_path)      # wav -> numpy array
+
+    # If stereo → make mono
+    if len(wav.shape) > 1:
+        wav = np.mean(wav, axis=1)
+
+    # Resample to 16 kHz for SpeechBrain
     if sr != 16000:
-        waveform = torchaudio.functional.resample(waveform, sr, 16000)
-
-    # If multi-channel, convert to mono (average channels)
-    if waveform.shape[0] > 1:
-        waveform = torch.mean(waveform, dim=0, keepdim=True)
+        wav = librosa.resample(wav.astype(np.float32), orig_sr=sr, target_sr=16000)
+        sr = 16000
 
     # Normalize
-    waveform = waveform / (torch.max(torch.abs(waveform)) + 1e-8)
+    wav = wav / (np.max(np.abs(wav)) + 1e-8)
 
-    # Encode batch (model.encode_batch expects a Tensor)
+    # Convert to torch tensor
+    waveform = torch.from_numpy(wav).float().unsqueeze(0)  # shape [1, time]
+
+    # Generate embedding
     with torch.no_grad():
-        emb = model.encode_batch(waveform)  # shape: [1, N] or similar
+        emb = model.encode_batch(waveform).squeeze()
 
-    # Convert to CPU list
+    # Convert to list
     try:
-        emb_list = emb.squeeze().cpu().tolist()
-    except Exception:
-        # fallback: convert via numpy
-        emb_list = emb.squeeze().cpu().numpy().tolist()
+        return emb.cpu().tolist()
+    except:
+        return emb.cpu().numpy().tolist()
 
-    return emb_list
 
 
 # --- Public async API ---

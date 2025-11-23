@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, JSON, DateTime
 from sqlalchemy.sql import func
 from ..database import Base
 from sqlalchemy.orm import relationship
+from .beneficiary import Beneficiary
 
 class User(Base):
     __tablename__ = "users"

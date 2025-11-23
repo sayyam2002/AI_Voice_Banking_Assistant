@@ -2,7 +2,7 @@
 venv-rasa/
 __pycache__/
 *.pyc
-
+rasa-only/
 .env
 
 # Rasa

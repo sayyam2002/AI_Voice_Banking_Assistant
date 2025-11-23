@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - NeoBank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <h3>
+           NeoBank
+        </h3>
+        <nav>
+          <a href="dashboard.html" class="active">Dashboard</a>
+          <a href="transactions.html">Transactions</a>
+          <a href="transfer.html">Transfer</a>
+          <a href="voice-enroll.html">Voice Enroll</a>
+          <a href="voice-verify.html">Voice Verify</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="logout-btn" onclick="logout()">Logout</div>
+      </aside>
+
+      <main class="content">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Overview of your accounts</p>
+
+        <div class="accounts-grid" id="accounts"></div>
+
+        <div class="voice-assistant">
+          <h2>Voice Assistant</h2>
+          <p>Press the button and speak your banking query to interact instantly.</p>
+
+          <button id="start-voice-btn" class="voice-btn">
+            🎤 Start Listening
+          </button>
+
+          <div id="voice-result" class="voice-result">Waiting for command...</div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/voice.js"></script>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Voice Enrollment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/voice.css" />
+  </head>
+  <body>
+    <div class="layout">
+    <aside class="sidebar">
+      <h3>NeoBank</h3>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="transfer.html">Transfer</a>
+        <a href="voice-enroll.html" class="active">Voice Enroll</a>
+        <a href="voice-verify.html">Voice Verify</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="logout-btn" onclick="logout()">Logout</div>
+    </aside>
+
+    <div class="container">
+      <h2>Voice Enrollment</h2>
+      <p class="subtitle">
+        Record the phrase:
+        <strong>"My voice is my password"</strong>
+        three times to secure your account.
+      </p>
+
+      <div class="voice-controls">
+        <div class="voice-row">
+          <span>Sample 1</span>
+          <button class="btn btn-primary" onclick="startEnrollRecording(1)">
+            🎙️ Record
+          </button>
+        </div>
+        <div class="voice-row">
+          <span>Sample 2</span>
+          <button class="btn btn-primary" onclick="startEnrollRecording(2)">
+            🎙️ Record
+          </button>
+        </div>
+        <div class="voice-row">
+          <span>Sample 3</span>
+          <button class="btn btn-primary" onclick="startEnrollRecording(3)">
+            🎙️ Record
+          </button>
+        </div>
+      </div>
+
+      <div class="btn-full-width-wrapper">
+        <button class="btn btn-secondary" onclick="submitEnrollment()" style="display: block; margin: 0 auto;">
+          Submit Enrollment
+        </button>
+      </div>
+
+      <p class="voice-status" id="enroll-status">Ready to record...</p>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/voice.js"></script>
+    </div>
+  </body>
+</html>

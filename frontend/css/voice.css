@@ -1,0 +1,175 @@
+/* Voice Specific Styles - Fluid Glassmorphism */
+
+/* Ensure the body fills the screen to show background gradients */
+body {
+    min-height: 100vh;
+}
+
+/* The main Glass Card */
+.container {
+    /* Fluid width settings */
+    width: 100%;
+    max-width: 900px; /* Slight adjustment for better focus */
+    
+    /* VITAL FIXES FOR EXTRA SPACE: */
+    height: fit-content;       /* Only grow as tall as the content */
+    align-self: center;        /* Stop stretching to match sidebar height */
+    margin: 40px auto;         /* Center horizontally with spacing */
+
+    /* Glass Effect */
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 32px;
+    
+    padding: 50px;
+    box-shadow: 0 25px 50px rgba(0, 76, 153, 0.15);
+    
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative background glow behind the container */
+.container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.container h2 {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 800;
+    /* Gradient Text */
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.container p.subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 35px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container p.subtitle strong {
+    color: var(--primary);
+    font-weight: 700;
+    display: block;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+.voice-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* The recording "Slots" */
+.voice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    
+    /* Inner Glass styling */
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.voice-row:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--primary-light);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 76, 153, 0.1);
+}
+
+.voice-row span {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.voice-row span::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-light);
+}
+
+/* Record Buttons within rows */
+.voice-row .btn-primary {
+    padding: 12px 24px;
+    font-size: 14px;
+    min-width: 130px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 76, 153, 0.25);
+    font-weight: 700;
+    flex-shrink: 0; 
+}
+
+.voice-status {
+    text-align: center;
+    font-size: 16px;
+    color: var(--primary);
+    margin-top: 20px;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px dashed rgba(0, 76, 153, 0.2);
+}
+
+/* Full width submit buttons */
+.btn-full-width-wrapper {
+    margin-top: 5px;
+    width: 100%;
+}
+
+.btn-full-width-wrapper .btn-secondary {
+    width: 100%;
+    font-size: 17px;
+    padding: 16px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f3f5 100%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    color: var(--text);
+    font-weight: 700;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-full-width-wrapper .btn-secondary:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    color: var(--primary);
+    border-color: var(--primary-light);
+}

@@ -11,9 +11,18 @@ from ..utils.voice_utils import (
     verify_voice_embedding
 )
 from ..core.config import settings
+import os
+# import tempfile
+import soundfile as sf
+import librosa
+import numpy as np
+import torch
+import traceback
 
 router = APIRouter()
 
+AUDIO_DIR = "backend/temp/audio"
+AUDIO_PATH = os.path.join(AUDIO_DIR, "input.wav")
 
 # ------------------------------
 #  Enroll Voice (3 samples)
@@ -74,3 +83,116 @@ async def verify_voice(
         401,
         f"Voice mismatch (score={result['score']:.3f} < threshold {result['threshold']})"
     )
+
+@router.post("/asr")
+async def voice_asr(file: UploadFile = File(...)):
+    """
+    Accepts a WAV file and saves it to a stable path, then runs SpeechBrain ASR.
+    No temp folders, no random file names.
+    """
+    try:
+        from speechbrain.inference.ASR import EncoderDecoderASR
+    except Exception as e:
+        return {"error": f"ASR model import failed: {str(e)}"}
+
+    # Ensure folder exists
+    os.makedirs(AUDIO_DIR, exist_ok=True)
+
+    # Save uploaded file to a FIXED predictable path
+    try:
+        content = await file.read()
+        with open(AUDIO_PATH, "wb") as f:
+            f.write(content)
+    except Exception as e:
+        return {"error": f"Failed to save audio file: {str(e)}"}
+
+    # Run ASR
+    try:
+        asr_model = EncoderDecoderASR.from_hparams(
+            source="speechbrain/asr-crdnn-rnnlm-librispeech",
+            savedir="pretrained_models/asr"
+        )
+
+        text = asr_model.transcribe_file(AUDIO_PATH)
+
+        # SpeechBrain sometimes returns list
+        if isinstance(text, (list, tuple)):
+            text = text[0] if text else ""
+
+        return {"text": str(text)}
+
+    except Exception as e:
+        traceback.print_exc()
+        return {"error": f"ASR failed: {str(e)}"}
+
+
+
+# @router.post("/asr")
+# async def voice_asr(
+#     file: UploadFile = File(...),
+#     current_user = Depends(get_current_user)
+# ):
+#     """
+#     Speech-to-text using SpeechBrain ASR with soundfile + librosa (NO torchaudio).
+#     """
+#     try:
+#         from speechbrain.inference.ASR import EncoderDecoderASR
+#     except Exception as e:
+#         raise HTTPException(500, f"ASR model load failed: {e}")
+
+#     # ---- Save temp file ----
+#     fd, tmp_path = tempfile.mkstemp(suffix=".wav")
+#     os.close(fd)
+
+#     try:
+#         with open(tmp_path, "wb") as f:
+#             f.write(await file.read())
+
+#         # ---- Load WAV using soundfile ----
+#         wav, sr = sf.read(tmp_path)
+
+#         # Stereo → mono
+#         if wav.ndim > 1:
+#             wav = np.mean(wav, axis=1)
+
+#         # Resample to 16k
+#         if sr != 16000:
+#             wav = librosa.resample(
+#                 wav.astype(np.float32),
+#                 orig_sr=sr,
+#                 target_sr=16000
+#             )
+#             sr = 16000
+
+#         # Normalize audio
+#         wav = wav / (np.max(np.abs(wav)) + 1e-8)
+
+#         # Convert to tensor
+#         waveform = torch.from_numpy(wav).float().unsqueeze(0)
+#         lengths = torch.tensor([1.0])
+
+#         # ---- Load SpeechBrain ASR ----
+#         asr_model = EncoderDecoderASR.from_hparams(
+#             source="speechbrain/asr-crdnn-rnnlm-librispeech",
+#             savedir="pretrained_models/asr"
+#         )
+
+#         # ---- Run transcription ----
+#         hyps = asr_model.transcribe_batch(waveform, lengths)
+
+#         # SpeechBrain returns a list
+#         if isinstance(hyps, (list, tuple)):
+#             text = hyps[0]
+#         else:
+#             text = str(hyps)
+
+#         return {"text": text}
+
+#     except Exception as e:
+#         raise HTTPException(500, f"ASR failed: {e}")
+
+#     finally:
+#         try:
+#             os.remove(tmp_path)
+#         except:
+#             pass

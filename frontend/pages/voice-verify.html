@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Voice Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/voice.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <h3>NeoBank</h3>
+        <nav>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="transactions.html">Transactions</a>
+          <a href="transfer.html">Transfer</a>
+          <a href="voice-enroll.html">Voice Enroll</a>
+          <a href="voice-verify.html" class="active">Voice Verify</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="logout-btn" onclick="logout()">Logout</div>
+      </aside>
+
+      <div class="container">
+        <h2>Voice Verification</h2>
+        <p class="subtitle">
+          Say: <strong>"My voice is my password"</strong> when recording to confirm your identity.
+        </p>
+
+        <div class="voice-controls">
+          <div class="voice-row">
+            <span>Verification Sample</span>
+            <button class="btn btn-primary" onclick="startVerifyRecording()">
+              🎙️ Record
+            </button>
+          </div>
+        </div>
+
+        <div class="btn-full-width-wrapper">
+          <button class="btn btn-secondary" onclick="submitVerification()">
+            Verify Identity
+          </button>
+        </div>
+
+        <p class="voice-status" id="verify-status">Waiting for input...</p>
+      </div>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/voice.js"></script>
+  </body>
+</html>

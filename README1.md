@@ -12,6 +12,7 @@ pip install huggingface_hub==0.14.1 --no-deps
 pip install python-multipart
 pip install sqlalchemy asyncpg 'pydantic[email]' passlib 'python-jose[cryptography]' packaging
 pip install joblib scipy tqdm>=4.42.1
+pip install bcrypt
 Then, 
 pip freeze > requirements.txt
 

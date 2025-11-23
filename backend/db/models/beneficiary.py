@@ -10,6 +10,6 @@ class Beneficiary(Base):
     name = Column(String(128), nullable=False)
     account_number = Column(String(32), nullable=False)
     bank_name = Column(String(128), nullable=True)
-
+    
     # owner relationship (optional)
     user = relationship("User", back_populates="beneficiaries", lazy="selectin")

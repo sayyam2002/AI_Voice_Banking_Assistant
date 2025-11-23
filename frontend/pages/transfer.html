@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Transfer - NeoBank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/transfer.css">
+</head>
+<body>
+
+<div class="layout">
+    <aside class="sidebar">
+        <h3>NeoBank</h3>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="transfer.html" class="active">Transfer</a>
+            <a href="voice-enroll.html">Voice Enroll</a>
+            <a href="voice-verify.html">Voice Verify</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="logout-btn" onclick="logout()">Logout</div>
+    </aside>
+
+    <div class="container">
+        <h2>Transfer Money</h2>
+        
+        <input id="recipient" placeholder="Recipient Name" autocomplete="off">
+        <input id="amount" placeholder="Amount ($)" type="number">
+        <input id="pin" placeholder="PIN" type="password" maxlength="4">
+
+        <button class="btn btn-primary" onclick="makeTransfer()">
+            Send Transfer 💸
+        </button>
+
+        <p id="result"></p>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/transfer.js"></script>
+
+</body>
+</html>

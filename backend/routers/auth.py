@@ -20,6 +20,9 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
+class LoginSchema(BaseModel):
+    username: str
+    password: str
 
 # ------------------------------------------------
 #  Helper: Get Current User from JWT
@@ -77,7 +80,7 @@ async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
 #  Login
 # ------------------------------------------------
 @router.post("/login")
-async def login(payload: UserCreate, db: AsyncSession = Depends(get_db)):
+async def login(payload: LoginSchema, db: AsyncSession = Depends(get_db)):
     q = select(User).where(User.username == payload.username)
     res = await db.execute(q)
     user = res.scalars().first()
