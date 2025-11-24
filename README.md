@@ -1,69 +1,160 @@
-This is a full-stack prototype of a modern NeoBank application, demonstrating a robust backend API built with FastAPI and an interactive frontend client using plain HTML/CSS/JavaScript. It focuses on integrating traditional banking functionalities with advanced, modern features like PIN authentication, Multi-Factor Voice Biometrics, and a powerful Generative AI-powered Conversational NLU engine for instant user interaction.
+🚀 NeoBank – AI-Powered Modern Banking System
+
+This project is a full-stack prototype of a modern NeoBank application, combining a secure backend built with FastAPI and an interactive frontend using HTML/CSS/JavaScript.
+It integrates traditional banking features with next-generation AI capabilities, including:
+
+🔐 Transaction PIN authentication
+
+🔊 Multi-Factor Voice Biometrics
+
+🤖 Generative AI–powered Conversational Banking Assistant
 
 🛠️ Tech Stack
-Backend: Python, FastAPI (Async API framework)
+Backend
 
-Database: SQLAlchemy (Async ORM)
+Python 3.10
 
-Authentication: JWT, OAuth2 Password Bearer, Bcrypt for hashing.
+FastAPI (Async API Framework)
 
-AI/ML: Google Gemini 2.5 Flash for Natural Language Understanding (NLU), SpeechBrain for Automatic Speech Recognition (ASR) and Voice Biometrics.
+SQLAlchemy (Async ORM)
 
-Frontend: HTML, CSS, JavaScript (Vanilla JS for simplicity and performance).
+Authentication: JWT, OAuth2 Password Bearer
+
+Bcrypt for password hashing
+
+SpeechBrain for Speaker Verification & Speech-to-Text
+
+Google Gemini 2.5 Flash for NLU / intent detection
+
+Torch, Librosa, Soundfile for audio processing
+
+Frontend
+
+HTML
+
+CSS
+
+JavaScript (Vanilla JS for lightweight performance)
 
 ✨ Features
-User Management: Register and Login (JWT-based authentication).
+🔑 User Authentication
 
-Account/Transaction Management: View account balances and transaction history.
+Register
 
-Secure Transfers: Initiate money transfers, secured by a mandatory Transaction PIN.
+Login
 
-Multi-Factor Authentication (MFA):
+JWT-secured sessions
 
-PIN Management: Set and verify a transaction-specific PIN.
+Password hashing with Bcrypt
 
-Voice Biometrics: Enroll and verify a user's voice for high-security actions.
+💳 Account & Transaction Management
 
-Conversational AI Assistant:
+View account balance
 
-Speech-to-Text (ASR): Converts spoken commands into text using SpeechBrain.
+View full transaction history
 
-Intent Detection (NLU): Uses the Gemini 2.5 Flash API to detect banking intents (e.g., check_balance, transfer_money) and extract parameters (e.g., amount, recipient).
+Transfer funds
+
+🔐 Security
+
+Transaction PIN (Set + Verify)
+
+Multi-Factor Authentication
+
+PIN Verification
+
+Voice Biometrics Authentication
+
+Voice Enrollment
+
+Voice Verification
+
+🤖 AI Conversational Assistant
+
+Speech-to-Text (ASR) using SpeechBrain
+
+Intent Recognition (NLU) using Gemini Flash
+
+Supports commands like:
+
+“Check my balance”
+
+“Send ₹500 to Amit”
+
+“Show my last 5 transactions”
 
 🚀 Installation & Setup
-Clone the repository.
+1️⃣ Clone the Repository
+git clone -b sayyam-3 https://github.com/sayyam2002/AI_Voice_Banking_Assistant/edit/sayyam-3
+cd AI_Voice_Banking_Assistant
 
-Set up the Python environment:
+2️⃣ Backend Setup
+Create Virtual Environment
+cd backend
+py -3.10 -m venv venv
+venv\Scripts\activate
 
-Bash
+Install Dependencies
+python -m pip install --upgrade pip
 
-pip install fastapi uvicorn sqlalchemy python-jose[cryptography] passlib[bcrypt] pydantic aiofiles google-genai speechbrain torch numpy librosa soundfile
-Note: Torch/SpeechBrain installation might require specific system dependencies.
+pip install fastapi "uvicorn[standard]" pydantic pydantic-settings httpx
+pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+pip install speechbrain --no-deps
+pip install hyperpyyaml sentencepiece
+pip install huggingface_hub==0.14.1 --no-deps
+pip install python-multipart
+pip install sqlalchemy asyncpg "pydantic[email]" passlib "python-jose[cryptography]" packaging
+pip install joblib scipy "tqdm>=4.42.1"
+pip install bcrypt
+pip install google-generativeai
+pip install librosa
+pip install soundfile
+pip install asgiref
 
-Configure Environment Variables: Set the following in your environment or a .env file for the backend:
+Freeze requirements
+pip freeze > requirements.txt
 
-SECRET_KEY: A strong, random string for JWT signing.
+3️⃣ Environment Variables
 
-ALGORITHM: JWT algorithm (e.g., HS256).
+Create a .env file inside /backend:
 
-GEMINI_API_KEY: Your Google AI Studio API key.
+SECRET_KEY=your-strong-secret-key
+ALGORITHM=HS256
+DATABASE_URL=postgresql+asyncpg://postgres:YOURPASSWORD@localhost:5432/neobank
+GEMINI_API_KEY=your-gemini-api-key
+VOICE_VERIFICATION_THRESHOLD=0.5
 
-VOICE_VERIFICATION_THRESHOLD: A float (e.g., 0.5) for voice verification.
+4️⃣ Database Setup (PostgreSQL)
 
-Run the FastAPI Backend:
+Install PostgreSQL 18.1
 
-Bash
+At final step, check Stack Builder
 
-uvicorn backend.app:app --reload
-The API will be available at http://127.0.0.1:8000.
+Inside Stack Builder:
 
-Access the Frontend: Navigate to the frontend directory: cd frontend
+Categories → Add-ons → pgAgent
 
-Start the simple Python web server:
+Open pgAdmin → Connect to server
 
-# This serves the files on port 8001
+Create database:
+
+neobank
+
+5️⃣ Start Backend
+uvicorn backend.app:app --reload --port 8000
+
+
+Backend API will run at:
+
+📍 http://127.0.0.1:8000
+
+🎨 Frontend Setup
+Start Frontend Server
+cd frontend
 python -m http.server 8001
 
 
+Frontend will be live at:
+http://127.0.0.1:8001
 
 
